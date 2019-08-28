@@ -31,6 +31,7 @@ const sample = arr => {
 let particles = [];
 let particlePointer = 0;
 const unnamed = "Unnamed";
+const api = "codeinthedark-api.herokuapp.com";
 
 const initialParticipantData = {
     animate: false,
@@ -66,7 +67,7 @@ const App = () => {
             exclamationUpdate
         ) => {
             if (name !== unnamed) {
-                axios.post("http://localhost:9000/text", {
+                axios.post(`${api}/text`, {
                     animate: animateUpdate,
                     animationKey,
                     content: contentUpdate,
@@ -117,7 +118,7 @@ const App = () => {
         setName(name);
         localStorage.setItem("name", name);
 
-        axios.post("http://localhost:9000/text", {
+        axios.post(`${api}/text`, {
             ...initialParticipantData,
             name
         });
