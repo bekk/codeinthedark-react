@@ -31,7 +31,7 @@ const sample = arr => {
 let particles = [];
 let particlePointer = 0;
 const unnamed = "Unnamed";
-const api = "codeinthedark-api.herokuapp.com";
+const api = "https://codeinthedark-api.herokuapp.com";
 
 const initialParticipantData = {
     animate: false,
