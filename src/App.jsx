@@ -21,6 +21,7 @@ import {
     POWER_MODE_ACTIVATION_THRESHOLD
 } from "./constants";
 
+const uuidv1 = require("uuid/v1");
 let streakTimeout, saveContentTimeout;
 
 const sample = arr => {
@@ -30,8 +31,11 @@ const sample = arr => {
 
 let particles = [];
 let particlePointer = 0;
-const unnamed = "Unnamed";
-const api = "https://codeinthedark-api.herokuapp.com";
+
+let api = "https://codeinthedark-api.herokuapp.com";
+if (process.env.NODE_ENV === "development") {
+    api = "http://localhost:9000";
+}
 
 const initialParticipantData = {
     animate: false,
@@ -43,13 +47,14 @@ const initialParticipantData = {
 };
 
 const App = () => {
+    const [uuid, setUuid] = useState(localStorage.getItem("uuid") || "");
     const [streak, updateStreak] = useState(0);
     const [animate, setAnimate] = useState(false);
     const [content, setContent] = useState(
         localStorage.getItem("content") || ""
     );
     const [animationKey, setAnimationKey] = useState(0);
-    const [name, setName] = useState(unnamed);
+    const [name, setName] = useState(localStorage.getItem("name") || "");
     const [exclamation, setExclamation] = useState(undefined);
     const [viewInstructions, setViewInstructions] = useState(false);
     const [powerMode, setPowerMode] = useState(false);
@@ -66,7 +71,7 @@ const App = () => {
             streakUpdate,
             exclamationUpdate
         ) => {
-            if (name !== unnamed) {
+            if (uuid !== "") {
                 axios.post(`${api}/text`, {
                     animate: animateUpdate,
                     animationKey,
@@ -75,6 +80,7 @@ const App = () => {
                         ? exclamationUpdate
                         : exclamation,
                     name,
+                    uuid,
                     powerMode: powerModeUpdate,
                     streak: streakUpdate
                 });
@@ -114,14 +120,26 @@ const App = () => {
     };
 
     const getName = () => {
-        const name = window.prompt("What is your name?");
-        setName(name);
-        localStorage.setItem("name", name);
+        if (name !== "") {
+            return;
+        }
 
-        axios.post(`${api}/text`, {
-            ...initialParticipantData,
-            name
-        });
+        const newName = window.prompt("Hva er navnet ditt?");
+        const newUuid = localStorage.getItem("uuid") || uuidv1();
+
+        setName(newName);
+        setUuid(newUuid);
+
+        localStorage.setItem("name", newName);
+        localStorage.setItem("uuid", newUuid);
+
+        if (newName !== "") {
+            axios.post(`${api}/text`, {
+                ...initialParticipantData,
+                name: newName,
+                uuid: newUuid
+            });
+        }
     };
 
     const shake = () => {
