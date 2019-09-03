@@ -1,247 +1,278 @@
 @font-face {
-  font-family: 'Press Start 2P';
-  src: url(./assets/fonts/PressStart2P-Regular.ttf) format('truetype');
+    font-family: 'Press Start 2P';
+    src: url(./assets/fonts/PressStart2P-Regular.ttf) format('truetype');
 }
 
 .power-mode {
-  --background-image: url(./assets/images/logo-power.png);
-  --background-animation: background-power 2s infinite both;
-  --ace-color: #00ddff;
-  --ace-comment-color: #00ff79;
-  --ace-attribute-color: #8194f4;
-  --name-tag-color: rgba(0, 221, 255, 0.75);
-  --streak-color: #00ddff;
-  --button-color: #3a5a93;
-  --pm-indicator-opacity: 1;
-  --pm-indicator-animation: power-mode-indicator 750ms linear both;
+    --background-image: url(./assets/images/logo-power.png);
+    --background-animation: background-power 2s infinite both;
+    --ace-color: #00ddff;
+    --ace-comment-color: #00ff79;
+    --ace-attribute-color: #8194f4;
+    --name-tag-color: rgba(0, 221, 255, 0.75);
+    --streak-color: #00ddff;
+    --button-color: #3a5a93;
+    --pm-indicator-opacity: 1;
+    --pm-indicator-animation: power-mode-indicator 750ms linear both;
 }
 
 body,
 html {
-  font-family: 'Press Start 2P', sans-serif;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  padding: 0;
-  margin: 0;
-  background: black;
+    font-family: 'Press Start 2P', sans-serif;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    background: black;
 }
 
 h1 {
-  color: white;
+    color: white;
 }
 
 .background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 0;
-  opacity: 0.5;
-  background-image: var(--background-image, url(./assets/images/logo.png));
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-  background-size: 520px 476px;
-  animation: var(--background-animation);
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    opacity: 0.5;
+    background-image: var(--background-image, url(./assets/images/logo.png));
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: 520px 476px;
+    animation: var(--background-animation);
 }
 
 #editor {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: 0;
-  background: transparent;
-  font-size: 14px;
-  transform: translate3d(0, 0, 0);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    background: transparent;
+    font-size: 14px;
+    transform: translate3d(0, 0, 0);
 
-  .ace_keyword,
-  .ace_meta,
-  .ace_fold,
-  .ace_entity.ace_name.ace_function,
-  .ace_support.ace_function,
-  .ace_variable {
-    color: var(--ace-color, #00ff79);
-  }
+    .ace_keyword,
+    .ace_meta,
+    .ace_fold,
+    .ace_entity.ace_name.ace_function,
+    .ace_support.ace_function,
+    .ace_variable {
+        color: var(--ace-color, #00ff79);
+    }
 
-  .ace_comment {
-    color: var(--ace-comment-color, #0dfdff);
-    display: inline-block;
-    animation: grow 1.5s infinite both;
-  }
+    .ace_comment {
+        color: var(--ace-comment-color, #0dfdff);
+        display: inline-block;
+        animation: grow 1.5s infinite both;
+    }
 
-  .ace_gutter {
-    background: rgba(0, 0, 0, 0.5);
-  }
+    .ace_gutter {
+        background: rgba(0, 0, 0, 0.5);
+    }
 
-  .ace_constant,
-  .ace_constant.ace_character,
-  .ace_constant.ace_character.ace_escape,
-  .ace_constant.ace_other,
-  .ace_string {
-    color: #f9ff00;
-    animation: pulse 1.5s infinite both;
-  }
+    .ace_constant,
+    .ace_constant.ace_character,
+    .ace_constant.ace_character.ace_escape,
+    .ace_constant.ace_other,
+    .ace_string {
+        color: #f9ff00;
+        animation: pulse 1.5s infinite both;
+    }
 
-  .ace_entity.ace_other.ace_attribute-name {
-    color: var(--ace-attribute-color, #99cc99);
-  }
+    .ace_entity.ace_other.ace_attribute-name {
+        color: var(--ace-attribute-color, #99cc99);
+    }
 }
 
 .streak-container {
-  position: absolute;
-  z-index: 10;
-  right: 20px;
-  top: 20px;
-  text-align: right;
-
-  .current {
-    color: white;
-    font-size: 16px;
-  }
-
-  .bar {
-    position: relative;
-    opacity: 0.5;
-    margin-top: 23px;
-    height: 8px;
-    background: var(--streak-color, #4effa1);
-    width: 100%;
-    transform: scaleX(0);
-
-    &.animate {
-      transform: scaleX(1);
-      animation: shrink 10000ms linear;
-    }
-  }
-
-  .counter {
-    font-size: 80px;
-    color: var(--streak-color, #4effa1);
-    padding-top: 30px;
-
-    &.bump {
-      animation: grow 0.25s both;
-    }
-  }
-
-  .exclamations {
     position: absolute;
-    bottom: -20px;
-    right: 0;
-    display: block;
-    color: var(--streak-color, #4effa1);
-    opacity: 0.75;
-    font-size: 20px;
+    z-index: 10;
+    right: 20px;
+    top: 20px;
     text-align: right;
 
-    .exclamation {
-      right: 0;
-      top: 0;
-      display: block;
-      position: absolute;
-      min-width: 200px;
-      animation: exclamation 1.5s ease-out both;
+    .current {
+      color: white;
+      font-size: 16px;
     }
-  }
+
+    .bar {
+        position: relative;
+        opacity: 0.5;
+        margin-top: 23px;
+        height: 8px;
+        background: var(--streak-color, #4effa1);
+        width: 100%;
+        transform: scaleX(0);
+
+        &.animate {
+            transform: scaleX(1);
+            animation: shrink 10000ms linear;
+        }
+    }
+
+    .counter {
+        font-size: 80px;
+        color: var(--streak-color, #4effa1);
+        padding-top: 30px;
+
+        &.bump {
+            animation: grow 0.25s both;
+        }
+    }
+
+    .exclamations {
+        position: absolute;
+        bottom: -20px;
+        right: 0;
+        display: block;
+        color: var(--streak-color, #4effa1);
+        opacity: 0.75;
+        font-size: 20px;
+        text-align: right;
+
+        .exclamation {
+            right: 0;
+            top: 0;
+            display: block;
+            position: absolute;
+            min-width: 200px;
+            animation: exclamation 1.5s ease-out both;
+        }
+    }
 }
 
 .name-tag {
-  position: absolute;
-  z-index: 40;
-  bottom: 20px;
-  left: 20px;
-  padding: 20px;
-  background: var(--name-tag-color, rgba(58, 147, 100, 0.75));
-  color: white;
-  font-size: 56px;
+    position: absolute;
+    z-index: 40;
+    bottom: 20px;
+    left: 20px;
+    padding: 20px;
+    background: var(--name-tag-color, rgba(58, 147, 100, 0.75));
+    color: white;
+    font-size: 56px;
 
-  &:hover {
-    cursor: pointer;
-    opacity: 0.8;
-  }
+    &:hover {
+        cursor: pointer;
+        opacity: 0.8;
+    }
 }
 
 .power-mode-indicator {
-  position: absolute;
-  z-index: 5;
-  width: 100%;
-  text-align: center;
-  top: 20px;
-  pointer-events: none;
-  opacity: var(--pm-indicator-opacity, 0);
-  transition: opacity 0.25s;
-  animation: var(--pm-indicator-animation);
+    position: absolute;
+    z-index: 5;
+    width: 100%;
+    text-align: center;
+    top: 20px;
+    pointer-events: none;
+    opacity: var(--pm-indicator-opacity, 0);
+    transition: opacity 0.25s;
+    animation: var(--pm-indicator-animation);
 
-  h1 {
-    font-size: 40px;
-    margin: 0;
-    color: #00ddff;
-  }
+    h1 {
+        font-size: 40px;
+        margin: 0;
+        color: #00ddff;
+    }
 }
 
 button {
-  font-family: 'Press Start 2P', sans-serif;
-  appearance: none;
-  background-color: var(--button-color, #3a9364);
-  color: white;
-  font-size: 12px;
-  padding: 10px 15px;
-  box-shadow: none;
-  border: none;
-  cursor: pointer;
-
-  &:focus {
-    border: none;
+    font-family: 'Press Start 2P', sans-serif;
+    appearance: none;
+    background-color: var(--button-color, #3a9364);
+    color: white;
+    font-size: 12px;
+    padding: 10px 15px;
     box-shadow: none;
-    outline: none;
-  }
+    border: none;
+    cursor: pointer;
+
+    &:focus {
+        border: none;
+        box-shadow: none;
+        outline: none;
+    }
 }
 
 .button-bar {
-  position: absolute;
-  z-index: 10;
-  bottom: 20px;
-  right: 20px;
+    position: absolute;
+    z-index: 10;
+    bottom: 20px;
+    right: 20px;
 }
 
 .finish-button {
-  float: right;
-  margin-left: 10px;
+    float: right;
+    margin-left: 10px;
 }
 
 .instructions-button {
-  float: right;
+    float: right;
 }
 
 .instructions-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 100;
-  text-align: center;
+    position: fixed;
+    z-index: 105;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
 }
 
 .instructions {
-  margin-top: 100px;
-  max-width: 900px;
-  width: 100%;
-  height: 600px;
-  display: inline-block;
-  text-align: left;
-  background: white;
-  padding: 8px;
+    background-color: #FFF;
+    border-radius: 4px;
+    display: block;
+    flex-grow: 0;
+    margin-bottom: 0;
+    height: 80%;
+    overflow: auto;
+    padding: 1rem 2rem;
+    position: relative;
+    width: 80%;
+    z-index: 1010;
+
+    & ul li {
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
 }
 
 canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-  pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    pointer-events: none;
 }
+
+.result {
+    border: 2px solid white;
+    bottom: 5rem;
+    height: 10rem;
+    position: absolute;
+    right: 1rem;
+    transition: width .5s, height .5s;
+    width: 15rem;
+    z-index: 100;
+
+    &:hover { 
+        height: 85%;  
+        width: 90%;
+    }
+}
+
+
 
 @keyframes grow {
   0% {

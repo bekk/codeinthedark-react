@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import AceEditor from "react-ace";
 import axios from "axios";
+import React, { useState, useEffect } from "react";
+import * as classNames from "classnames";
 import { debounce } from "lodash";
+import AceEditor from "react-ace";
 
 import "brace/mode/html";
 import "brace/theme/vibrant_ink";
@@ -346,7 +347,6 @@ const App = () => {
                 </div>
 
                 <div className="button-bar">
-                    <button className="finish-button">Finish</button>
                     <button
                         className="instructions-button"
                         onClick={() => {
@@ -356,9 +356,16 @@ const App = () => {
                         Instructions
                     </button>
                 </div>
+                <img
+                    className="result"
+                    src={`${api}/assets/codeinthedark.png`}
+                    alt={"resultat"}
+                />
             </>
         </div>
     );
 };
 
 export default App;
+
+export { api };
