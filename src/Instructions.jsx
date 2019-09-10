@@ -41,10 +41,21 @@ const Instructions = ({ closeInstructions }) => {
                     <ul>
                         <li>logo: "/assets/logo.svg"</li>
                         <li>
+                            Abstrakt illustrasjon: "/assets/ping.mp4". Se
+                            nederst for hint om video.
+                        </li>
+                        <li>
                             ping illustrasjon:
                             "https://ping.bekk.no/assets/ping-shape.png"
                         </li>
                     </ul>
+                </pre>
+
+                <pre>
+                    <div>Video brukes slik:</div>
+                    <div>{`<video loop=true autoplay=true>`}</div>
+                    <div>{`    <source src=<> type="video/mp4">`}</div>
+                    <div>{`</video>`}</div>
                 </pre>
             </div>
         </div>
