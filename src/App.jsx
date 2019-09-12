@@ -1,13 +1,14 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { debounce } from "lodash";
 import AceEditor from "react-ace";
+import { postParticipantData } from "./api/api";
 
 import "brace/mode/html";
 import "brace/theme/vibrant_ink";
 import "brace/ext/searchbox";
 import "brace/ext/language_tools";
 import Instructions from "./Instructions";
+import Result from "./Result";
 
 import {
     EXCLAMATIONS,
@@ -22,7 +23,7 @@ import {
 } from "./constants";
 
 const uuidv1 = require("uuid/v1");
-let streakTimeout, saveContentTimeout;
+let streakTimeout, saveContentTimeout, postTimeout;
 
 const sample = arr => {
     const len = arr == null ? 0 : arr.length;
@@ -49,6 +50,8 @@ const initialParticipantData = {
 const App = () => {
     const [uuid, setUuid] = useState(localStorage.getItem("uuid") || "");
     const [streak, updateStreak] = useState(0);
+    const refStreak = React.useRef(streak);
+    refStreak.current = streak;
     const [animate, setAnimate] = useState(false);
     const [content, setContent] = useState(
         localStorage.getItem("content") || ""
@@ -62,32 +65,6 @@ const App = () => {
     const [lastDraw, setLastDraw] = useState(0);
     const [ctx, setCtx] = useState(undefined);
     const [inputType, setInputType] = useState(undefined);
-
-    const postParticipantData = debounce(
-        (
-            animateUpdate,
-            contentUpdate,
-            powerModeUpdate,
-            streakUpdate,
-            exclamationUpdate
-        ) => {
-            if (uuid !== "") {
-                axios.post(`${api}/text`, {
-                    animate: animateUpdate,
-                    animationKey,
-                    content: contentUpdate,
-                    exclamation: exclamationUpdate
-                        ? exclamationUpdate
-                        : exclamation,
-                    name,
-                    uuid,
-                    powerMode: powerModeUpdate,
-                    streak: streakUpdate
-                });
-            }
-        },
-        250
-    );
 
     const onChange = (value, data) => {
         const insertTextAction = data.action === "insert";
@@ -175,8 +152,10 @@ const App = () => {
     }, []);
 
     useEffect(() => {
+        clearTimeout(postTimeout);
+
         let tmpExplamation = exclamation;
-        let tmpPowerMode = streak === 0 ? false : powerMode;
+        let tmpPowerMode = refStreak.current === 0 ? false : powerMode;
         if (streak > 0 && (streak + 1) % 10 === 0) {
             const newExclamation = sample(EXCLAMATIONS);
             setExclamation(newExclamation);
@@ -193,13 +172,18 @@ const App = () => {
         }
         spawnParticles();
 
-        postParticipantData(
-            animate,
-            content,
-            tmpPowerMode,
-            streak,
-            tmpExplamation
-        );
+        postTimeout = setTimeout(() => {
+            postParticipantData(
+                uuid,
+                animationKey,
+                exclamation,
+                animate,
+                content,
+                tmpPowerMode,
+                refStreak.current,
+                tmpExplamation
+            );
+        }, 200);
     }, [streak]);
 
     const onLoad = editor => {
@@ -349,17 +333,26 @@ const App = () => {
                     <button
                         className="instructions-button"
                         onClick={() => {
+                            axios
+                                .delete(`${api}/text/${uuid}`)
+                                .then(response => {
+                                    localStorage.clear();
+                                    location.reload();
+                                });
+                        }}
+                    >
+                        Reset
+                    </button>
+                    <button
+                        className="instructions-button"
+                        onClick={() => {
                             setViewInstructions(true);
                         }}
                     >
                         Instructions
                     </button>
                 </div>
-                <img
-                    className="result"
-                    src={`${api}/assets/codeinthedark.png`}
-                    alt={"resultat"}
-                />
+                <Result />
             </>
         </div>
     );

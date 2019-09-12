@@ -1,15 +1,6 @@
 import React from "react";
-import axios from "axios";
-import { api } from "./App";
 
 const Instructions = ({ closeInstructions }) => {
-    const [ressurser, settRessurser] = React.useState([]);
-    React.useEffect(() => {
-        axios
-            .get(`${api}/ressurser`)
-            .then(response => settRessurser(response.data));
-    }, []);
-
     return (
         <div className="instructions-container" onClick={closeInstructions}>
             <div
@@ -28,32 +19,26 @@ const Instructions = ({ closeInstructions }) => {
                         <li>Stopp å kode når tiden har gått ut</li>
                     </ol>
                     <p>Lykke til og viktigst av alt; ha det gøy!</p>
-                    <p>--- Eksterne ressurser ---</p>
-                    <p>Tekster</p>
+
+                    <p>--- Ressurser ---</p>
                     <ul>
-                        {ressurser.map(ressurs => (
-                            <li>{`${ressurs.tittel}: ${ressurs.detaljer}`}</li>
-                        ))}
-                    </ul>
-                    <p>Assets</p>
-                    Enkelte assets er tilgjengelige gjennom server og andre
-                    gjennom eksterne parter.
-                    <ul>
-                        <li>logo: "/assets/logo.svg"</li>
+                        <li>Tekster kan kopieres fra resultatet.</li>
                         <li>
-                            Abstrakt illustrasjon: "/assets/ping.mp4". Se
-                            nederst for hint om video.
+                            logo (trenger ikke å ta hensyn til størrelse):
+                            "http://codeinthedark-api.herokuapp.com/assets/logo.svg"
                         </li>
                         <li>
-                            ping illustrasjon:
-                            "https://ping.bekk.no/assets/ping-shape.png"
+                            Abstrakt video (300 x 300px):
+                            "http://codeinthedark-api.herokuapp.com/assets/ping_black.mp4".
+                            Se under for hint om video.
                         </li>
                     </ul>
                 </pre>
 
+                <br />
                 <pre>
                     <div>Video brukes slik:</div>
-                    <div>{`<video loop=true autoplay=true>`}</div>
+                    <div>{`<video loop autoplay>`}</div>
                     <div>{`    <source src=<> type="video/mp4">`}</div>
                     <div>{`</video>`}</div>
                 </pre>
