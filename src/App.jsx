@@ -23,7 +23,7 @@ import {
 } from "./constants";
 
 const uuidv1 = require("uuid/v1");
-let streakTimeout, saveContentTimeout, postTimeout;
+let streakTimeout, saveContentTimeout;
 
 const sample = arr => {
     const len = arr == null ? 0 : arr.length;
@@ -111,7 +111,7 @@ const App = () => {
         localStorage.setItem("uuid", newUuid);
 
         if (newName !== "") {
-            axios.post(`${api}/text`, {
+            postParticipantData({
                 ...initialParticipantData,
                 name: newName,
                 uuid: newUuid
@@ -152,8 +152,6 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        clearTimeout(postTimeout);
-
         let tmpExplamation = exclamation;
         let tmpPowerMode = refStreak.current === 0 ? false : powerMode;
         if (streak > 0 && (streak + 1) % 10 === 0) {
@@ -172,18 +170,16 @@ const App = () => {
         }
         spawnParticles();
 
-        postTimeout = setTimeout(() => {
-            postParticipantData(
-                uuid,
-                animationKey,
-                exclamation,
-                animate,
-                content,
-                tmpPowerMode,
-                refStreak.current,
-                tmpExplamation
-            );
-        }, 200);
+        postParticipantData({
+            animate,
+            animationKey,
+            content,
+            exclamation: tmpExplamation,
+            name,
+            powerMode: tmpPowerMode,
+            streak,
+            uuid
+        });
     }, [streak]);
 
     const onLoad = editor => {
