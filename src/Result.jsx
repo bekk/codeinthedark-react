@@ -10,7 +10,12 @@ const Result = () => {
         });
     }, []);
 
-    return <iframe className="result" srcDoc={resultHtml} />;
+    return (
+        <>
+            <div className="result__label">Resultat</div>
+            <iframe className="result" srcDoc={resultHtml} />
+        </>
+    );
 };
 
 export default Result;

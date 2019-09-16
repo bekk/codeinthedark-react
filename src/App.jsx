@@ -76,20 +76,31 @@ const App = () => {
         }
 
         setContent(value);
-        clearTimeout(streakTimeout);
-        clearTimeout(saveContentTimeout);
-
         if (insertTextAction) {
+            clearTimeout(streakTimeout);
+            clearTimeout(saveContentTimeout);
+
             updateStreak(streak + 1);
             setAnimate(true);
             setAnimationKey(animationKey + 1);
-        }
 
-        streakTimeout = setTimeout(() => {
-            updateStreak(0);
-            setAnimate(false);
-            setPowerMode(false);
-        }, 10000);
+            streakTimeout = setTimeout(() => {
+                updateStreak(0);
+                setAnimate(false);
+                setPowerMode(false);
+            }, 9800);
+        } else {
+            postParticipantData({
+                animate,
+                animationKey,
+                content: value,
+                exclamation,
+                name,
+                powerMode,
+                streak,
+                uuid
+            });
+        }
 
         saveContentTimeout = setTimeout(() => {
             localStorage.setItem("content", value);
@@ -101,7 +112,10 @@ const App = () => {
             return;
         }
 
-        const newName = window.prompt("Hva er navnet ditt?");
+        let newName = null;
+        while (newName === null) {
+            newName = window.prompt("Hva er navnet ditt?");
+        }
         const newUuid = localStorage.getItem("uuid") || uuidv1();
 
         setName(newName);
