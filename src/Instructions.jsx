@@ -15,7 +15,7 @@ const Instructions = ({ closeInstructions }) => {
                             ressurser!
                         </li>
                         <li>Forbli i editoren</li>
-                        <li>Ingen målingsverktøy</li>
+                        <li>Det er ikke lov å bruke inspect eller andre målingsverktøy</li>
                         <li>Stopp å kode når tiden har gått ut</li>
                     </ol>
                     <p>Lykke til og viktigst av alt; ha det gøy!</p>
