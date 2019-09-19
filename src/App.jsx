@@ -41,7 +41,14 @@ if (process.env.NODE_ENV === "development") {
 const initialParticipantData = {
     animate: false,
     animationKey: 0,
-    content: "",
+    content: `<html>
+    <style>
+    
+    </style>
+    <body>
+        
+    </body>
+</html>`,
     exclamation: "",
     powerMode: false,
     streak: 0
@@ -54,7 +61,7 @@ const App = () => {
     refStreak.current = streak;
     const [animate, setAnimate] = useState(false);
     const [content, setContent] = useState(
-        localStorage.getItem("content") || ""
+        localStorage.getItem("content") || initialParticipantData.content
     );
     const [animationKey, setAnimationKey] = useState(0);
     const [name, setName] = useState(localStorage.getItem("name") || "");
@@ -74,6 +81,7 @@ const App = () => {
         if (token) {
             setInputType(token.type);
         }
+        console.log(value);
 
         setContent(value);
         if (insertTextAction) {

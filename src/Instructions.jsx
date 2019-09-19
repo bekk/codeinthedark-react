@@ -15,9 +15,17 @@ const Instructions = ({ closeInstructions }) => {
                             ressurser!
                         </li>
                         <li>Forbli i editoren</li>
-                        <li>Det er ikke lov å bruke inspect eller andre målingsverktøy</li>
+                        <li>
+                            Det er ikke lov å bruke inspect eller andre
+                            målingsverktøy
+                        </li>
                         <li>Stopp å kode når tiden har gått ut</li>
                     </ol>
+                    <p>
+                        Vinneren er deltakeren som kommer nærmest den oppgitte
+                        skissen. Combo/poeng kan være avgjørende ved veldig like
+                        resultater.
+                    </p>
                     <p>Lykke til og viktigst av alt; ha det gøy!</p>
 
                     <p>--- Ressurser ---</p>
