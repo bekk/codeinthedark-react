@@ -18,7 +18,7 @@ export const postParticipantData = throttle(
         uuid
     }) => {
         if (uuid !== "") {
-            axios.post(`${api}/text`, {
+            axios.post(`${api}/participant-data`, {
                 animate,
                 animationKey,
                 content,

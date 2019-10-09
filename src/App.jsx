@@ -351,7 +351,7 @@ const App = props => {
                         className="instructions-button"
                         onClick={() => {
                             axios
-                                .delete(`${api}/text/${uuid}`)
+                                .delete(`${api}/participant-data/${uuid}`)
                                 .then(response => {
                                     localStorage.clear();
                                     location.reload();
