@@ -54,7 +54,7 @@ const initialParticipantData = {
     streak: 0
 };
 
-const App = () => {
+const App = props => {
     const [uuid, setUuid] = useState(localStorage.getItem("uuid") || "");
     const [streak, updateStreak] = useState(0);
     const refStreak = React.useRef(streak);
@@ -81,7 +81,6 @@ const App = () => {
         if (token) {
             setInputType(token.type);
         }
-        console.log(value);
 
         setContent(value);
         if (insertTextAction) {
@@ -370,7 +369,7 @@ const App = () => {
                         Instructions
                     </button>
                 </div>
-                <Result />
+                <Result match={props.match} />
             </>
         </div>
     );

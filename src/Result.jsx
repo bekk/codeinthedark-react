@@ -1,14 +1,20 @@
 import * as React from "react";
-import { getResultHtml } from "./api/api";
+import { getHtml } from "./api/api";
 
-const Result = () => {
+const Result = props => {
     const [resultHtml, setResultHtml] = React.useState("");
 
     React.useEffect(() => {
-        getResultHtml().then(response => {
-            setResultHtml(response);
-        });
-    }, []);
+        console.log(props.match.params);
+        if (props.match.params) {
+            getHtml(
+                props.match.params.arrangement,
+                props.match.params.pulje
+            ).then(response => {
+                setResultHtml(response);
+            });
+        }
+    }, [props.match.params.arrangement, props.match.params.pulje]);
 
     return (
         <>

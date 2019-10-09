@@ -33,6 +33,8 @@ export const postParticipantData = throttle(
     500
 );
 
-export const getResultHtml = () => {
-    return axios.get(`${api}/result`).then(response => response.data);
+export const getHtml = (arrangement, pulje) => {
+    return axios
+        .get(`${api}/${arrangement}/${pulje}`)
+        .then(response => response.data);
 };

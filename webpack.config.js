@@ -5,7 +5,8 @@ module.exports = {
     entry: "./src/index.jsx",
     resolve: { extensions: [".js", ".jsx"] },
     output: {
-        path: path.join(__dirname, "production")
+        path: path.join(__dirname, "production"),
+        publicPath: "/"
     },
     module: {
         rules: [
@@ -36,6 +37,7 @@ module.exports = {
         })
     ],
     devServer: {
+        historyApiFallback: true,
         contentBase: path.join(__dirname, "production"),
         hot: true
     }
