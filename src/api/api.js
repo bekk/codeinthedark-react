@@ -38,3 +38,9 @@ export const getHtml = (arrangement, pulje) => {
         .get(`${api}/${arrangement}/${pulje}`)
         .then(response => response.data);
 };
+
+export const getResourceHelp = (arrangement, pulje) => {
+    return axios
+        .get(`${api}/ressurshjelp/${arrangement}/${pulje}`)
+        .then(response => response);
+};

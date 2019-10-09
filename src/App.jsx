@@ -296,6 +296,7 @@ const App = props => {
                 {viewInstructions && (
                     <Instructions
                         closeInstructions={() => setViewInstructions(false)}
+                        match={props.match}
                     />
                 )}
                 <AceEditor
@@ -366,7 +367,7 @@ const App = props => {
                             setViewInstructions(true);
                         }}
                     >
-                        Instructions
+                        Instruksjoner
                     </button>
                 </div>
                 <Result match={props.match} />

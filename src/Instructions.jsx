@@ -1,6 +1,19 @@
 import React from "react";
+import { getResourceHelp } from "./api/api";
 
-const Instructions = ({ closeInstructions }) => {
+const Instructions = ({ closeInstructions, match }) => {
+    const [resourceHelp, setResourceHelp] = React.useState([]);
+
+    React.useEffect(() => {
+        if (match.params) {
+            getResourceHelp(match.params.arrangement, match.params.pulje).then(
+                response => {
+                    setResourceHelp(response.data);
+                }
+            );
+        }
+    }, [match.params.arrangement, match.params.pulje]);
+
     return (
         <div className="instructions-container" onClick={closeInstructions}>
             <div
@@ -31,22 +44,19 @@ const Instructions = ({ closeInstructions }) => {
                     <p>--- Ressurser ---</p>
                     <ul>
                         <li>Tekster kan kopieres fra resultatet.</li>
-                        <li>
-                            logo (trenger ikke å ta hensyn til størrelse):
-                            "http://codeinthedark-api.herokuapp.com/assets/logo.svg"
-                        </li>
-                        <li>
-                            Abstrakt video (300 x 300px):
-                            "http://codeinthedark-api.herokuapp.com/assets/ping_black.mp4".
-                            Se under for hint om video.
-                        </li>
+                        {resourceHelp.map((help, index) => {
+                            return <li key={index}>{help}</li>;
+                        })}
                     </ul>
                 </pre>
 
                 <br />
+
                 <pre>
+                    <p>--- HJELP 🤯 ---</p>
+
                     <div>Video brukes slik:</div>
-                    <div>{`<video loop autoplay>`}</div>
+                    <div>{`<video loop autoplay muted>`}</div>
                     <div>{`    <source src=<> type="video/mp4">`}</div>
                     <div>{`</video>`}</div>
                 </pre>
