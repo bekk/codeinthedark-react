@@ -1,23 +1,14 @@
-import axios from "axios";
-import throttle from "lodash/throttle";
+import axios from 'axios';
+import throttle from 'lodash/throttle';
 
-let api = "https://codeinthedark-api.herokuapp.com";
-if (process.env.NODE_ENV === "development") {
-    api = "http://localhost:9000";
+let api = 'https://codeinthedark-api.herokuapp.com';
+if (process.env.NODE_ENV === 'development') {
+    api = 'http://localhost:9000';
 }
 
 export const postParticipantData = throttle(
-    ({
-        animate,
-        animationKey,
-        content,
-        exclamation,
-        name,
-        powerMode,
-        streak,
-        uuid
-    }) => {
-        if (uuid !== "") {
+    ({ animate, animationKey, content, exclamation, name, powerMode, streak, uuid }) => {
+        if (uuid !== '') {
             axios.post(`${api}/participant-data`, {
                 animate,
                 animationKey,
@@ -26,7 +17,7 @@ export const postParticipantData = throttle(
                 name,
                 uuid,
                 powerMode,
-                streak
+                streak,
             });
         }
     },
@@ -34,13 +25,9 @@ export const postParticipantData = throttle(
 );
 
 export const getHtml = (arrangement, pulje) => {
-    return axios
-        .get(`${api}/${arrangement}/${pulje}`)
-        .then(response => response.data);
+    return axios.get(`${api}/${arrangement}/${pulje}`).then(response => response.data);
 };
 
 export const getResourceHelp = (arrangement, pulje) => {
-    return axios
-        .get(`${api}/ressurshjelp/${arrangement}/${pulje}`)
-        .then(response => response);
+    return axios.get(`${api}/ressurshjelp/${arrangement}/${pulje}`).then(response => response);
 };
