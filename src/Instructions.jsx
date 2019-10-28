@@ -1,43 +1,31 @@
-import React from "react";
-import { getResourceHelp } from "./api/api";
+import React from 'react';
+import { getResourceHelp } from './api/api';
 
 const Instructions = ({ closeInstructions, match }) => {
     const [resourceHelp, setResourceHelp] = React.useState([]);
 
     React.useEffect(() => {
         if (match.params) {
-            getResourceHelp(match.params.arrangement, match.params.pulje).then(
-                response => {
-                    setResourceHelp(response.data);
-                }
-            );
+            getResourceHelp(match.params.arrangement, match.params.pulje).then(response => {
+                setResourceHelp(response.data);
+            });
         }
     }, [match.params.arrangement, match.params.pulje]);
 
     return (
         <div className="instructions-container" onClick={closeInstructions}>
-            <div
-                className="instructions"
-                onClick={event => event.stopPropagation()}
-            >
+            <div className="instructions" onClick={event => event.stopPropagation()}>
                 <pre>
                     <p>--- Regler ---</p>
                     <ol>
-                        <li>
-                            Ingen forhåndsvisninger - ikke av resultatet eller
-                            ressurser!
-                        </li>
+                        <li>Ingen forhåndsvisninger - ikke av resultatet eller ressurser!</li>
                         <li>Forbli i editoren</li>
-                        <li>
-                            Det er ikke lov å bruke inspect eller andre
-                            målingsverktøy
-                        </li>
+                        <li>Det er ikke lov å bruke inspect eller andre målingsverktøy</li>
                         <li>Stopp å kode når tiden har gått ut</li>
                     </ol>
                     <p>
-                        Vinneren er deltakeren som kommer nærmest den oppgitte
-                        skissen. Combo/poeng kan være avgjørende ved veldig like
-                        resultater.
+                        Vinneren er deltakeren som kommer nærmest den oppgitte skissen. Combo/poeng
+                        kan være avgjørende ved veldig like resultater.
                     </p>
                     <p>Lykke til og viktigst av alt; ha det gøy!</p>
 
