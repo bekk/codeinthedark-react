@@ -1,14 +1,16 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
-import AceEditor from "react-ace";
-import { postParticipantData } from "./api/api";
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import classnames from 'classnames';
+import AceEditor from 'react-ace';
+import { postParticipantData } from './api/api';
 
-import "brace/mode/html";
-import "brace/theme/vibrant_ink";
-import "brace/ext/searchbox";
-import "brace/ext/language_tools";
-import Instructions from "./Instructions";
-import Result from "./Result";
+import 'brace/mode/html';
+import 'brace/theme/vibrant_ink';
+import 'brace/ext/searchbox';
+import 'brace/ext/language_tools';
+import Instructions from './Instructions';
+import Result from './Result';
+import Countdown from './components/Countdown';
 
 import {
     EXCLAMATIONS,
@@ -19,10 +21,10 @@ import {
     PARTICLE_NUM_RANGE,
     PARTICLE_SIZE,
     PARTICLE_VELOCITY_RANGE,
-    POWER_MODE_ACTIVATION_THRESHOLD
-} from "./constants";
+    POWER_MODE_ACTIVATION_THRESHOLD,
+} from './constants';
 
-const uuidv1 = require("uuid/v1");
+const uuidv1 = require('uuid/v1');
 let streakTimeout, saveContentTimeout;
 
 const sample = arr => {
@@ -33,9 +35,9 @@ const sample = arr => {
 let particles = [];
 let particlePointer = 0;
 
-let api = "https://codeinthedark-api.herokuapp.com";
-if (process.env.NODE_ENV === "development") {
-    api = "http://localhost:9000";
+let api = 'https://codeinthedark-api.herokuapp.com';
+if (process.env.NODE_ENV === 'development') {
+    api = 'http://localhost:9000';
 }
 
 const initialParticipantData = {
@@ -49,22 +51,22 @@ const initialParticipantData = {
         
     </body>
 </html>`,
-    exclamation: "",
+    exclamation: '',
     powerMode: false,
-    streak: 0
+    streak: 0,
 };
 
 const App = props => {
-    const [uuid, setUuid] = useState(localStorage.getItem("uuid") || "");
+    const [uuid, setUuid] = useState(localStorage.getItem('uuid') || '');
     const [streak, updateStreak] = useState(0);
     const refStreak = React.useRef(streak);
     refStreak.current = streak;
     const [animate, setAnimate] = useState(false);
     const [content, setContent] = useState(
-        localStorage.getItem("content") || initialParticipantData.content
+        localStorage.getItem('content') || initialParticipantData.content
     );
     const [animationKey, setAnimationKey] = useState(0);
-    const [name, setName] = useState(localStorage.getItem("name") || "");
+    const [name, setName] = useState(localStorage.getItem('name') || '');
     const [exclamation, setExclamation] = useState(undefined);
     const [viewInstructions, setViewInstructions] = useState(false);
     const [powerMode, setPowerMode] = useState(false);
@@ -72,9 +74,10 @@ const App = props => {
     const [lastDraw, setLastDraw] = useState(0);
     const [ctx, setCtx] = useState(undefined);
     const [inputType, setInputType] = useState(undefined);
+    const [waiting, setWaiting] = useState(true);
 
     const onChange = (value, data) => {
-        const insertTextAction = data.action === "insert";
+        const insertTextAction = data.action === 'insert';
 
         const pos = insertTextAction ? data.end : data.start;
         const token = editor.session.getTokenAt(pos.row, pos.column);
@@ -105,37 +108,37 @@ const App = props => {
                 name,
                 powerMode,
                 streak,
-                uuid
+                uuid,
             });
         }
 
         saveContentTimeout = setTimeout(() => {
-            localStorage.setItem("content", value);
+            localStorage.setItem('content', value);
         }, 300);
     };
 
     const getName = () => {
-        if (name !== "") {
+        if (name !== '') {
             return;
         }
 
         let newName = null;
         while (newName === null) {
-            newName = window.prompt("Hva er navnet ditt?");
+            newName = window.prompt('Hva er navnet ditt?');
         }
-        const newUuid = localStorage.getItem("uuid") || uuidv1();
+        const newUuid = localStorage.getItem('uuid') || uuidv1();
 
         setName(newName);
         setUuid(newUuid);
 
-        localStorage.setItem("name", newName);
-        localStorage.setItem("uuid", newUuid);
+        localStorage.setItem('name', newName);
+        localStorage.setItem('uuid', newUuid);
 
-        if (newName !== "") {
+        if (newName !== '') {
             postParticipantData({
                 ...initialParticipantData,
                 name: newName,
-                uuid: newUuid
+                uuid: newUuid,
             });
         }
     };
@@ -146,27 +149,24 @@ const App = props => {
         }
 
         const intensity =
-            1 +
-            2 *
-                Math.random() *
-                Math.floor((streak - POWER_MODE_ACTIVATION_THRESHOLD) / 100);
+            1 + 2 * Math.random() * Math.floor((streak - POWER_MODE_ACTIVATION_THRESHOLD) / 100);
 
         const x = intensity * (Math.random() > 0.5 ? -1 : 1);
         const y = intensity * (Math.random() > 0.5 ? -1 : 1);
 
-        document.getElementById("editor").style.margin = `${y}px ${x}px`;
+        document.getElementById('editor').style.margin = `${y}px ${x}px`;
 
         setTimeout(() => {
-            document.getElementById("editor").style.margin;
+            document.getElementById('editor').style.margin;
         }, 75);
     };
 
     useEffect(() => {
-        let name = localStorage.getItem("name");
+        let name = localStorage.getItem('name');
         if (!name) {
             getName();
         } else {
-            setName(localStorage.getItem("name"));
+            setName(localStorage.getItem('name'));
         }
 
         window.requestAnimationFrame(onFrame);
@@ -199,7 +199,7 @@ const App = props => {
             name,
             powerMode: tmpPowerMode,
             streak,
-            uuid
+            uuid,
         });
     }, [streak]);
 
@@ -238,25 +238,21 @@ const App = props => {
         velocity: {
             x:
                 PARTICLE_VELOCITY_RANGE.x[0] +
-                Math.random() *
-                    (PARTICLE_VELOCITY_RANGE.x[1] -
-                        PARTICLE_VELOCITY_RANGE.x[0]),
+                Math.random() * (PARTICLE_VELOCITY_RANGE.x[1] - PARTICLE_VELOCITY_RANGE.x[0]),
 
             y:
                 PARTICLE_VELOCITY_RANGE.y[0] +
-                Math.random() *
-                    (PARTICLE_VELOCITY_RANGE.y[1] -
-                        PARTICLE_VELOCITY_RANGE.y[0])
-        }
+                Math.random() * (PARTICLE_VELOCITY_RANGE.y[1] - PARTICLE_VELOCITY_RANGE.y[0]),
+        },
     });
 
-    const drawParticles = timeDelta => {
+    const drawParticles = () => {
         let canvasContext = ctx;
         if (!ctx) {
-            const canvas = document.getElementById("canvas");
+            const canvas = document.getElementById('canvas');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            canvasContext = canvas.getContext("2d");
+            canvasContext = canvas.getContext('2d');
             setCtx(canvasContext);
         }
 
@@ -268,9 +264,7 @@ const App = props => {
                 particle.y += particle.velocity.y;
                 particle.alpha *= PARTICLE_ALPHA_FADEOUT;
 
-                canvasContext.fillStyle = `rgba(${particle.color.join(",")}, ${
-                    particle.alpha
-                })`;
+                canvasContext.fillStyle = `rgba(${particle.color.join(',')}, ${particle.alpha})`;
 
                 canvasContext.fillRect(
                     Math.round(particle.x - PARTICLE_SIZE / 2),
@@ -289,9 +283,9 @@ const App = props => {
     };
 
     return (
-        <div className={powerMode ? "power-mode" : ""}>
+        <div className={powerMode ? 'power-mode' : ''}>
             <>
-                <div className="background" />
+                <div className={classnames('background', { waiting: waiting })} />
                 <canvas id="canvas" />
                 {viewInstructions && (
                     <Instructions
@@ -299,77 +293,82 @@ const App = props => {
                         match={props.match}
                     />
                 )}
-                <AceEditor
-                    onLoad={onLoad}
-                    mode="html"
-                    theme="vibrant_ink"
-                    fontSize={20}
-                    name="editor"
-                    height="100vh"
-                    width="100vw"
-                    value={content}
-                    highlightActiveLine={false}
-                    showPrintMargin={false}
-                    setOptions={{
-                        useWorker: false,
-                        showFoldWidgets: false
-                    }}
-                    session="manual"
-                    editorProps={{ $blockScrolling: Infinity }}
-                    onChange={onChange}
-                />
+                <div className="main-content">
+                    <Countdown waiting={true} tekst={`Er du klar ${name}?`} />
 
-                <div className="streak-container">
-                    <div className="current">Combo</div>
-                    <div key={animationKey} className="counter bump">
-                        {streak}
-                    </div>
                     <div
-                        key={animationKey + 1}
-                        className={`bar ${
-                            animate && streak !== 0 ? "animate" : ""
-                        }`}
-                    />
-                    <div className="exclamations">
-                        {exclamation && (
-                            <span key={exclamation} className="exclamation">
-                                {exclamation}
-                            </span>
-                        )}
+                        className={classnames('editor-content', {
+                            waiting: true,
+                        })}
+                    >
+                        <AceEditor
+                            onLoad={onLoad}
+                            mode="html"
+                            theme="vibrant_ink"
+                            fontSize={20}
+                            name="editor"
+                            height="100vh"
+                            width="100vw"
+                            value={content}
+                            highlightActiveLine={false}
+                            showPrintMargin={false}
+                            setOptions={{
+                                useWorker: false,
+                                showFoldWidgets: false,
+                            }}
+                            session="manual"
+                            editorProps={{ $blockScrolling: Infinity }}
+                            onChange={onChange}
+                        />
+
+                        <div className="streak-container">
+                            <div className="current">Combo</div>
+                            <div key={animationKey} className="counter bump">
+                                {streak}
+                            </div>
+                            <div
+                                key={animationKey + 1}
+                                className={`bar ${animate && streak !== 0 ? 'animate' : ''}`}
+                            />
+                            <div className="exclamations">
+                                {exclamation && (
+                                    <span key={exclamation} className="exclamation">
+                                        {exclamation}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="power-mode-indicator">
+                            <h1>POWER MODE!</h1>
+                        </div>
                     </div>
-                </div>
-
-                <div className="name-tag" onClick={getName}>
-                    {name}
-                </div>
-
-                <div className="power-mode-indicator">
-                    <h1>POWER MODE!</h1>
-                </div>
-
-                <div className="button-bar">
-                    <button
-                        className="instructions-button"
-                        onClick={() => {
-                            axios
-                                .delete(`${api}/participant-data/${uuid}`)
-                                .then(response => {
+                    <div className="name-tag" onClick={getName}>
+                        {name}
+                    </div>
+                    <div className="button-bar">
+                        <button
+                            className="instructions-button"
+                            onClick={() => {
+                                axios.delete(`${api}/participant-data/${uuid}`).then(response => {
                                     localStorage.clear();
                                     location.reload();
                                 });
-                        }}
-                    >
-                        Reset
-                    </button>
-                    <button
-                        className="instructions-button"
-                        onClick={() => {
-                            setViewInstructions(true);
-                        }}
-                    >
-                        Instruksjoner
-                    </button>
+                            }}
+                        >
+                            Reset
+                        </button>
+                        <button
+                            className="instructions-button"
+                            onClick={() => {
+                                setViewInstructions(true);
+                            }}
+                        >
+                            Instruksjoner
+                        </button>
+                    </div>
                 </div>
+
                 <Result match={props.match} />
             </>
         </div>
