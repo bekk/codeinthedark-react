@@ -1,6 +1,6 @@
-import { fromEvent } from "rxjs";
-import * as io from "socket.io-client";
-import { api } from "../App";
+import { fromEvent } from 'rxjs';
+import * as io from 'socket.io-client';
+import { api } from '../App';
 
 export class SocketService {
     /* tslint:disable */
@@ -8,13 +8,13 @@ export class SocketService {
     /* tslint:enable */
 
     init() {
-        this.socket = io(`${api}/participant`);
+        this.socket = io(`${api}/participant`, { query: 'gamePin=1' });
         return this;
     }
 
     // link message event to rxjs data source
     onGameState() {
-        return fromEvent(this.socket, "gamestate");
+        return fromEvent(this.socket, 'gamestate');
     }
 
     // disconnect - used when unmounting

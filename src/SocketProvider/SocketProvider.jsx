@@ -1,36 +1,65 @@
-import * as React from "react";
-import SocketContext, { useSocket } from "./SocketContext";
-import { SocketService } from "./SocketService";
+import * as React from 'react';
+import { SocketService } from './SocketService';
 
-const statuses = {
-    IN_PROGRESS: "IN_PROGRESS",
-    UNINITIALIZED: "UNINITIALIZED",
-    WAITING: "WAITING"
+export const actions = {
+    SET_GAME_STATE: 'SET_GAME_STATE',
 };
 
-const service = new SocketService();
+export const statuses = {
+    IN_PROGRESS: 'IN_PROGRESS',
+    UNINITIALIZED: 'UNINITIALIZED',
+    WAITING: 'WAITING',
+};
+
+const GameStateContext = React.createContext(undefined);
+
+const gamestateReducer = (state, action) => {
+    switch (action.type) {
+        case actions.SET_GAME_STATE: {
+            return {
+                ...state,
+                gamestate: action.payload,
+            };
+        }
+        default: {
+            throw new Error(`Uhåndtert action type: ${action.type}`);
+        }
+    }
+};
 
 const SocketProvider = props => {
-    const socket = useSocket();
-    const [gameState, setGameState] = React.useState(statuses.UNINITIALIZED);
+    const socketService = new SocketService();
+    const [state, dispatch] = React.useReducer(gamestateReducer, {
+        gamestate: {
+            status: statuses.UNINITIALIZED,
+        },
+    });
 
     React.useEffect(() => {
-        socket.init();
-        const receiveGameState = socket.onGameState();
+        socketService.init();
+        const receiveGameState = socketService.onGameState();
 
         receiveGameState.subscribe(data => {
-            console.log("data: ", data);
-            setGameState(data);
+            if (data) {
+                dispatch({
+                    type: actions.SET_GAME_STATE,
+                    payload: data,
+                });
+            }
         });
 
-        return () => socket.disconnect();
+        return () => socketService.disconnect();
     }, []);
 
-    return (
-        <SocketContext.Provider value={service}>
-            {props.children}
-        </SocketContext.Provider>
-    );
+    return <GameStateContext.Provider value={state}>{props.children}</GameStateContext.Provider>;
+};
+
+export const useGamestateContext = () => {
+    const context = React.useContext(GameStateContext);
+    if (context === undefined) {
+        throw new Error('useGamestateContext må brukes inne i en GameStateContext');
+    }
+    return context;
 };
 
 export default SocketProvider;
