@@ -1,16 +1,14 @@
-import * as React from "react";
-import { getHtml } from "./api/api";
+import * as React from 'react';
+import { getHtml } from './api/api';
 
 const Result = ({ match }) => {
-    const [resultHtml, setResultHtml] = React.useState("");
+    const [resultHtml, setResultHtml] = React.useState('');
 
     React.useEffect(() => {
         if (match.params) {
-            getHtml(match.params.arrangement, match.params.pulje).then(
-                response => {
-                    setResultHtml(response);
-                }
-            );
+            getHtml(match.params.arrangement, match.params.pulje).then(response => {
+                setResultHtml(response);
+            });
         }
     }, [match.params.arrangement, match.params.pulje]);
 
