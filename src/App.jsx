@@ -1,13 +1,8 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import AceEditor from 'react-ace';
 import { postParticipantData } from './api/api';
 
-import 'brace/mode/html';
-import 'brace/theme/vibrant_ink';
-import 'brace/ext/searchbox';
-import 'brace/ext/language_tools';
 import Instructions from './Instructions';
 import Result from './Result';
 import Countdown from './components/Countdown';
@@ -23,6 +18,10 @@ import {
     PARTICLE_VELOCITY_RANGE,
     POWER_MODE_ACTIVATION_THRESHOLD,
 } from './constants';
+import Nametag from './components/Nametag/Nametag';
+import Button from './components/buttons/Button';
+import StreakContainer from './components/Streak-container/Streak-container';
+import Editor from './components/Editor';
 
 const uuidv1 = require('uuid/v1');
 let streakTimeout, saveContentTimeout;
@@ -294,78 +293,38 @@ const App = props => {
                     />
                 )}
                 <div className="main-content">
-                    <Countdown waiting={true} tekst={`Er du klar ${name}?`} />
-
+                    <Countdown waiting={waiting} tekst={`Er du klar ${name}?`} />
                     <div
                         className={classnames('editor-content', {
-                            waiting: true,
+                            waiting: waiting,
                         })}
                     >
-                        <AceEditor
-                            onLoad={onLoad}
-                            mode="html"
-                            theme="vibrant_ink"
-                            fontSize={20}
-                            name="editor"
-                            height="100vh"
-                            width="100vw"
-                            value={content}
-                            highlightActiveLine={false}
-                            showPrintMargin={false}
-                            setOptions={{
-                                useWorker: false,
-                                showFoldWidgets: false,
-                            }}
-                            session="manual"
-                            editorProps={{ $blockScrolling: Infinity }}
-                            onChange={onChange}
-                        />
+                        <Editor onChange={onChange} onLoad={onLoad} content={content} />
 
-                        <div className="streak-container">
-                            <div className="current">Combo</div>
-                            <div key={animationKey} className="counter bump">
-                                {streak}
-                            </div>
-                            <div
-                                key={animationKey + 1}
-                                className={`bar ${animate && streak !== 0 ? 'animate' : ''}`}
-                            />
-                            <div className="exclamations">
-                                {exclamation && (
-                                    <span key={exclamation} className="exclamation">
-                                        {exclamation}
-                                    </span>
-                                )}
-                            </div>
-                        </div>
+                        <StreakContainer
+                            animationKey={animationKey}
+                            streak={streak}
+                            animate={animate}
+                            exclamation={exclamation}
+                        />
 
                         <div className="power-mode-indicator">
                             <h1>POWER MODE!</h1>
                         </div>
                     </div>
-                    <div className="name-tag" onClick={getName}>
-                        {name}
-                    </div>
+                    <Nametag name={name} />}
                     <div className="button-bar">
-                        <button
-                            className="instructions-button"
-                            onClick={() => {
-                                axios.delete(`${api}/participant-data/${uuid}`).then(response => {
+                        <Button
+                            onClick={() =>
+                                axios.delete(`${api}/participant-data/${uuid}`).then(() => {
                                     localStorage.clear();
                                     location.reload();
-                                });
-                            }}
+                                })
+                            }
                         >
                             Reset
-                        </button>
-                        <button
-                            className="instructions-button"
-                            onClick={() => {
-                                setViewInstructions(true);
-                            }}
-                        >
-                            Instruksjoner
-                        </button>
+                        </Button>
+                        <Button onClick={() => setViewInstructions(true)}>Instruksjoner</Button>
                     </div>
                 </div>
 
