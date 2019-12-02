@@ -6,13 +6,15 @@ import { Route, Router, Switch } from 'react-router';
 import SocketProvider from './SocketProvider/SocketProvider';
 import './index.less';
 import App from './App';
+import Welcome from './components/Welcome/Welcome';
 
 const AppMedRouter = () => {
     return (
         <SocketProvider>
             <Router history={createBrowserHistory()}>
                 <Switch>
-                    <Route path={'/:arrangement/:pulje'} component={App} />
+                    <Route path={'/game/:gamepin'} component={App} />
+                    <Route path={'/'} component={Welcome} />
                 </Switch>
             </Router>
         </SocketProvider>

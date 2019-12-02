@@ -1,10 +1,9 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import AceEditor from 'react-ace';
 import beautify from 'js-beautify';
 import { postParticipantData } from './api/api';
-
+import { useHistory } from 'react-router-dom';
 import Instructions from './Instructions';
 import Result from './Result';
 import Countdown from './components/Countdown';
@@ -60,18 +59,20 @@ const initialParticipantData = {
 };
 
 const App = props => {
+    const history = useHistory();
     const context = useGamestateContext();
+    const participantState = JSON.parse(sessionStorage.getItem('participantState'));
 
-    const [uuid, setUuid] = useState(localStorage.getItem('uuid') || '');
+    const [uuid, setUuid] = useState(participantState.uuid || '');
     const [streak, updateStreak] = useState(0);
     const refStreak = React.useRef(streak);
     refStreak.current = streak;
     const [animate, setAnimate] = useState(false);
     const [content, setContent] = useState(
-        localStorage.getItem('content') || initialParticipantData.content
+        participantState.content || initialParticipantData.content
     );
     const [animationKey, setAnimationKey] = useState(0);
-    const [name, setName] = useState(localStorage.getItem('name') || '');
+    const [name, setName] = useState(participantState.name || '');
     const [exclamation, setExclamation] = useState(undefined);
     const [viewInstructions, setViewInstructions] = useState(false);
     const [powerMode, setPowerMode] = useState(false);
@@ -141,34 +142,12 @@ const App = props => {
         }
 
         saveContentTimeout = setTimeout(() => {
-            localStorage.setItem('content', value);
+            const newState = {
+                ...participantState,
+                content: value,
+            };
+            sessionStorage.setItem('participantState', JSON.stringify(newState));
         }, 300);
-    };
-
-    const getName = () => {
-        if (name !== '') {
-            return;
-        }
-
-        let newName = null;
-        while (newName === null) {
-            newName = window.prompt('Hva er navnet ditt?');
-        }
-        const newUuid = localStorage.getItem('uuid') || uuidv1();
-
-        setName(newName);
-        setUuid(newUuid);
-
-        localStorage.setItem('name', newName);
-        localStorage.setItem('uuid', newUuid);
-
-        if (newName !== '') {
-            postParticipantData({
-                ...initialParticipantData,
-                name: newName,
-                uuid: newUuid,
-            });
-        }
     };
 
     const shake = () => {
@@ -190,13 +169,12 @@ const App = props => {
     };
 
     useEffect(() => {
-        let name = localStorage.getItem('name');
+        let participantState = JSON.parse(sessionStorage.getItem('participantState'));
+        let name = participantState.name;
         if (!name) {
-            getName();
-        } else {
-            setName(localStorage.getItem('name'));
+            console.info('Finner ikke navn i sessionstorage, redirecter til forside');
+            history.push('/');
         }
-
         window.requestAnimationFrame(onFrame);
     }, []);
 
@@ -330,7 +308,6 @@ const App = props => {
                         waiting={context.gamestate.status !== statuses.IN_PROGRESS}
                         tekst={`Er du klar ${name}?`}
                     />
-
                     <div
                         className={classnames('editor-content', {
                             waiting: context.gamestate.status !== statuses.IN_PROGRESS,
@@ -349,7 +326,7 @@ const App = props => {
                             <h1>POWER MODE!</h1>
                         </div>
                     </div>
-                    <Nametag name={name} />}
+                    <Nametag name={name} />
                     <div className="button-bar">
                         <Button
                             onClick={() =>
