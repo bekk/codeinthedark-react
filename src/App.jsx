@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
+import AceEditor from 'react-ace';
+import beautify from 'js-beautify';
 import { postParticipantData } from './api/api';
 
 import Instructions from './Instructions';
@@ -18,6 +20,8 @@ import {
     PARTICLE_VELOCITY_RANGE,
     POWER_MODE_ACTIVATION_THRESHOLD,
 } from './constants';
+
+import { useGamestateContext, statuses } from './SocketProvider/SocketProvider';
 import Nametag from './components/Nametag/Nametag';
 import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
@@ -56,6 +60,8 @@ const initialParticipantData = {
 };
 
 const App = props => {
+    const context = useGamestateContext();
+
     const [uuid, setUuid] = useState(localStorage.getItem('uuid') || '');
     const [streak, updateStreak] = useState(0);
     const refStreak = React.useRef(streak);
@@ -73,7 +79,28 @@ const App = props => {
     const [lastDraw, setLastDraw] = useState(0);
     const [ctx, setCtx] = useState(undefined);
     const [inputType, setInputType] = useState(undefined);
-    const [waiting, setWaiting] = useState(true);
+
+    document.onkeydown = event => {
+        if ((event.key == 's' || event.key == 'S') && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault();
+
+            setContent(
+                beautify.html(content, {
+                    indent_size: 4,
+                    indent_char: ' ',
+                    max_preserve_newlines: 10,
+                    preserve_newlines: true,
+                    indent_scripts: 'keep',
+                    end_with_newline: true,
+                    wrap_line_length: 120,
+                    indent_inner_html: true,
+                })
+            );
+            return false;
+        }
+
+        return true;
+    };
 
     const onChange = (value, data) => {
         const insertTextAction = data.action === 'insert';
@@ -86,18 +113,20 @@ const App = props => {
 
         setContent(value);
         if (insertTextAction) {
-            clearTimeout(streakTimeout);
-            clearTimeout(saveContentTimeout);
+            if (data.lines.length === 1) {
+                clearTimeout(streakTimeout);
+                clearTimeout(saveContentTimeout);
 
-            updateStreak(streak + 1);
-            setAnimate(true);
-            setAnimationKey(animationKey + 1);
+                updateStreak(streak + 1);
+                setAnimate(true);
+                setAnimationKey(animationKey + 1);
 
-            streakTimeout = setTimeout(() => {
-                updateStreak(0);
-                setAnimate(false);
-                setPowerMode(false);
-            }, 9800);
+                streakTimeout = setTimeout(() => {
+                    updateStreak(0);
+                    setAnimate(false);
+                    setPowerMode(false);
+                }, 9800);
+            }
         } else {
             postParticipantData({
                 animate,
@@ -284,7 +313,11 @@ const App = props => {
     return (
         <div className={powerMode ? 'power-mode' : ''}>
             <>
-                <div className={classnames('background', { waiting: waiting })} />
+                <div
+                    className={classnames('background', {
+                        waiting: context.gamestate.status !== statuses.IN_PROGRESS,
+                    })}
+                />
                 <canvas id="canvas" />
                 {viewInstructions && (
                     <Instructions
@@ -293,10 +326,14 @@ const App = props => {
                     />
                 )}
                 <div className="main-content">
-                    <Countdown waiting={waiting} tekst={`Er du klar ${name}?`} />
+                    <Countdown
+                        waiting={context.gamestate.status !== statuses.IN_PROGRESS}
+                        tekst={`Er du klar ${name}?`}
+                    />
+
                     <div
                         className={classnames('editor-content', {
-                            waiting: waiting,
+                            waiting: context.gamestate.status !== statuses.IN_PROGRESS,
                         })}
                     >
                         <Editor onChange={onChange} onLoad={onLoad} content={content} />
