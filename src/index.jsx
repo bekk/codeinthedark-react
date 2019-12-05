@@ -12,7 +12,7 @@ const AppMedRouter = () => {
         <SocketProvider>
             <Router history={createBrowserHistory()}>
                 <Switch>
-                    <Route path={'/:arrangement/:pulje'} component={App} />
+                    <Route path={'/'} component={App} />
                 </Switch>
             </Router>
         </SocketProvider>

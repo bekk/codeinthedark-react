@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import AceEditor from 'react-ace';
+import { useSanity } from './hooks/useSanity';
 import beautify from 'js-beautify';
 import { postParticipantData } from './api/api';
 
@@ -61,6 +61,8 @@ const initialParticipantData = {
 
 const App = props => {
     const context = useGamestateContext();
+    const gamestate = context.gamestate;
+    const game = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
 
     const [uuid, setUuid] = useState(localStorage.getItem('uuid') || '');
     const [streak, updateStreak] = useState(0);
@@ -322,7 +324,7 @@ const App = props => {
                 {viewInstructions && (
                     <Instructions
                         closeInstructions={() => setViewInstructions(false)}
-                        match={props.match}
+                        game={game}
                     />
                 )}
                 <div className="main-content">
@@ -330,7 +332,6 @@ const App = props => {
                         waiting={context.gamestate.status !== statuses.IN_PROGRESS}
                         tekst={`Er du klar ${name}?`}
                     />
-
                     <div
                         className={classnames('editor-content', {
                             waiting: context.gamestate.status !== statuses.IN_PROGRESS,
@@ -365,7 +366,7 @@ const App = props => {
                     </div>
                 </div>
 
-                <Result match={props.match} />
+                <Result game={game} />
             </>
         </div>
     );

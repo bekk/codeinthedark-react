@@ -1,17 +1,6 @@
 import React from 'react';
-import { getResourceHelp } from './api/api';
 
-const Instructions = ({ closeInstructions, match }) => {
-    const [resourceHelp, setResourceHelp] = React.useState([]);
-
-    React.useEffect(() => {
-        if (match.params) {
-            getResourceHelp(match.params.arrangement, match.params.pulje).then(response => {
-                setResourceHelp(response.data);
-            });
-        }
-    }, [match.params.arrangement, match.params.pulje]);
-
+const Instructions = ({ closeInstructions, game }) => {
     return (
         <div className="instructions-container" onClick={closeInstructions}>
             <div className="instructions" onClick={event => event.stopPropagation()}>
@@ -32,7 +21,7 @@ const Instructions = ({ closeInstructions, match }) => {
                     <p>--- Ressurser ---</p>
                     <ul>
                         <li>Tekster kan kopieres fra resultatet.</li>
-                        {resourceHelp.map((help, index) => {
+                        {game.asset_texts.map((help, index) => {
                             return <li key={index}>{help}</li>;
                         })}
                     </ul>
