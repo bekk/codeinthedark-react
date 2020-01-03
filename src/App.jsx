@@ -1,9 +1,9 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import { useSanity } from './hooks/useSanity';
+import React, { useState, useEffect } from 'react';
 import beautify from 'js-beautify';
-import { postParticipantData } from './api/api';
+import { useSanity } from './hooks/useSanity';
+import { postParticipantData, createParticipant } from './api/api';
 
 import Instructions from './Instructions';
 import Result from './Result';
@@ -44,8 +44,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const initialParticipantData = {
-    animate: false,
-    animationKey: 0,
     content: `<html>
     <style>
     
@@ -54,12 +52,10 @@ const initialParticipantData = {
         
     </body>
 </html>`,
-    exclamation: '',
-    powerMode: false,
-    streak: 0,
 };
 
 const App = props => {
+    const gamepin = props.gamepin;
     const context = useGamestateContext();
     const gamestate = context.gamestate;
     const game = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
@@ -165,11 +161,7 @@ const App = props => {
         localStorage.setItem('uuid', newUuid);
 
         if (newName !== '') {
-            postParticipantData({
-                ...initialParticipantData,
-                name: newName,
-                uuid: newUuid,
-            });
+            createParticipant({ name: newName, uuid: newUuid, gamepin });
         }
     };
 

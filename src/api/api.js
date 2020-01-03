@@ -23,3 +23,12 @@ export const postParticipantData = throttle(
     },
     500
 );
+
+export const createParticipant = participantData => {
+    console.log(api);
+    return axios.post(`${api}/participant/create`, {
+        uuid: participantData.uuid,
+        name: participantData.name,
+        gamepin: participantData.gamepin,
+    });
+};

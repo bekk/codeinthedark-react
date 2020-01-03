@@ -12,7 +12,12 @@ const AppMedRouter = () => {
         <SocketProvider>
             <Router history={createBrowserHistory()}>
                 <Switch>
-                    <Route path={'/'} component={App} />
+                    <Route
+                        path={'/game/:gamepin'}
+                        render={props => {
+                            return <App gamepin={props.match.params.gamepin} />;
+                        }}
+                    />
                 </Switch>
             </Router>
         </SocketProvider>
