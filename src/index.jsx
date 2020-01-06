@@ -14,7 +14,8 @@ const AppMedRouter = () => {
             <Router history={createBrowserHistory()}>
                 <Switch>
                     <Route path={'/game/:gamepin'} component={App} />
-                    <Route path={'/'} component={Welcome} />
+                    {/* <Route path={'/'} component={Welcome} /> */}
+                    <Route path={'/'} component={App} />
                 </Switch>
             </Router>
         </SocketProvider>

@@ -1,6 +1,10 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
+<<<<<<< HEAD
+=======
+import { useSanity } from './hooks/useSanity';
+>>>>>>> master
 import beautify from 'js-beautify';
 import { postParticipantData } from './api/api';
 import { useHistory } from 'react-router-dom';
@@ -61,7 +65,12 @@ const initialParticipantData = {
 const App = props => {
     const history = useHistory();
     const context = useGamestateContext();
+<<<<<<< HEAD
     const participantState = JSON.parse(sessionStorage.getItem('participantState'));
+=======
+    const gamestate = context.gamestate;
+    const game = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
+>>>>>>> master
 
     const [uuid, setUuid] = useState(participantState.uuid || '');
     const [streak, updateStreak] = useState(0);
@@ -300,7 +309,7 @@ const App = props => {
                 {viewInstructions && (
                     <Instructions
                         closeInstructions={() => setViewInstructions(false)}
-                        match={props.match}
+                        game={game}
                     />
                 )}
                 <div className="main-content">
@@ -342,7 +351,7 @@ const App = props => {
                     </div>
                 </div>
 
-                <Result match={props.match} />
+                <Result game={game} />
             </>
         </div>
     );

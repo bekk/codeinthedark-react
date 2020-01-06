@@ -24,18 +24,18 @@ export const postParticipantData = throttle(
     500
 );
 
-export const createParticipant = participantData => {
-    return axios.post(`${api}/participant/create`, {
-        uuid: participantData.uuid,
-        name: participantData.name,
-        gamepin: participantData.gamepin,
-    });
-};
+// export const createParticipant = participantData => {
+//     return axios.post(`${api}/participant/create`, {
+//         uuid: participantData.uuid,
+//         name: participantData.name,
+//         gamepin: participantData.gamepin,
+//     });
+// };
 
-export const getHtml = (arrangement, pulje) => {
-    return axios.get(`${api}/${arrangement}/${pulje}`).then(response => response.data);
-};
+// export const getHtml = (arrangement, pulje) => {
+//     return axios.get(`${api}/${arrangement}/${pulje}`).then(response => response.data);
+// };
 
-export const getResourceHelp = (arrangement, pulje) => {
-    return axios.get(`${api}/ressurshjelp/${arrangement}/${pulje}`).then(response => response);
-};
+// export const getResourceHelp = (arrangement, pulje) => {
+//     return axios.get(`${api}/ressurshjelp/${arrangement}/${pulje}`).then(response => response);
+// };
