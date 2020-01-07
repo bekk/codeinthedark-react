@@ -9,7 +9,7 @@ import App from './App';
 
 const AppMedRouter = () => {
     return (
-        <SocketProvider>
+        <SocketProvider gamepin={'1234'} uuid={'1234'}>
             <Router history={createBrowserHistory()}>
                 <Switch>
                     <Route

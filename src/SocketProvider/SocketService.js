@@ -7,8 +7,8 @@ export class SocketService {
     socket;
     /* tslint:enable */
 
-    init() {
-        this.socket = io(`${api}/participant`, { query: 'gamePin=1' });
+    init(gamepin, uuid) {
+        this.socket = io(`${api}/participant`, { query: { gamepin, uuid } });
         return this;
     }
 
