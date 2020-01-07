@@ -36,7 +36,7 @@ const SocketProvider = props => {
     });
 
     React.useEffect(() => {
-        socketService.init();
+        socketService.init(props.gamepin, props.uuid);
         const receiveGameState = socketService.onGameState();
 
         receiveGameState.subscribe(data => {

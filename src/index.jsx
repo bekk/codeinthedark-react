@@ -10,11 +10,20 @@ import Welcome from './components/Welcome/Welcome';
 
 const AppMedRouter = () => {
     return (
-        <SocketProvider>
+        <SocketProvider gamepin={'1234'} uuid={'1234'}>
             <Router history={createBrowserHistory()}>
                 <Switch>
+<<<<<<< HEAD
                     <Route exact path={'/'} component={Welcome} />
                     <Route path={'/game/:gamepin'} component={App} />
+=======
+                    <Route
+                        path={'/game/:gamepin'}
+                        render={props => {
+                            return <App gamepin={props.match.params.gamepin} />;
+                        }}
+                    />
+>>>>>>> feature/ventende-til-start
                 </Switch>
             </Router>
         </SocketProvider>

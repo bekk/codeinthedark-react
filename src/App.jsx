@@ -1,10 +1,15 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import { useSanity } from './hooks/useSanity';
+import React, { useState, useEffect } from 'react';
 import beautify from 'js-beautify';
+<<<<<<< HEAD
 import { postParticipantData } from './api/api';
 import { useHistory } from 'react-router-dom';
+=======
+import { useSanity } from './hooks/useSanity';
+import { postParticipantData, createParticipant } from './api/api';
+
+>>>>>>> feature/ventende-til-start
 import Instructions from './Instructions';
 import Result from './Result';
 import Countdown from './components/Countdown';
@@ -43,9 +48,13 @@ if (process.env.NODE_ENV === 'development') {
     api = 'http://localhost:9000';
 }
 
+<<<<<<< HEAD
 export const initialParticipantData = {
     animate: false,
     animationKey: 0,
+=======
+const initialParticipantData = {
+>>>>>>> feature/ventende-til-start
     content: `<html>
     <style>
     
@@ -54,13 +63,14 @@ export const initialParticipantData = {
         
     </body>
 </html>`,
-    exclamation: '',
-    powerMode: false,
-    streak: 0,
 };
 
 const App = props => {
+<<<<<<< HEAD
     const history = useHistory();
+=======
+    const gamepin = props.gamepin;
+>>>>>>> feature/ventende-til-start
     const context = useGamestateContext();
     const gamestate = context.gamestate;
     const game = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
@@ -157,6 +167,31 @@ const App = props => {
         }, 300);
     };
 
+<<<<<<< HEAD
+=======
+    const getName = () => {
+        if (name !== '') {
+            return;
+        }
+
+        let newName = null;
+        while (newName === null) {
+            newName = window.prompt('Hva er navnet ditt?');
+        }
+        const newUuid = localStorage.getItem('uuid') || uuidv1();
+
+        setName(newName);
+        setUuid(newUuid);
+
+        localStorage.setItem('name', newName);
+        localStorage.setItem('uuid', newUuid);
+
+        if (newName !== '') {
+            createParticipant({ name: newName, uuid: newUuid, gamepin });
+        }
+    };
+
+>>>>>>> feature/ventende-til-start
     const shake = () => {
         if (!powerMode) {
             return;

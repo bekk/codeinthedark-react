@@ -31,11 +31,3 @@ export const createParticipant = participantData => {
         gamepin: participantData.gamepin,
     });
 };
-
-// export const getHtml = (arrangement, pulje) => {
-//     return axios.get(`${api}/${arrangement}/${pulje}`).then(response => response.data);
-// };
-
-// export const getResourceHelp = (arrangement, pulje) => {
-//     return axios.get(`${api}/ressurshjelp/${arrangement}/${pulje}`).then(response => response);
-// };
