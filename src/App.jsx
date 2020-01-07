@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import { useSanity } from './hooks/useSanity';
+import React, { useState, useEffect } from 'react';
 import beautify from 'js-beautify';
 import { postParticipantData } from './api/api';
+import { useHistory } from 'react-router-dom';
+import { useSanity } from './hooks/useSanity';
 
 import Instructions from './Instructions';
 import Result from './Result';
@@ -21,13 +22,12 @@ import {
     POWER_MODE_ACTIVATION_THRESHOLD,
 } from './constants';
 
-import { useGamestateContext, statuses } from './SocketProvider/SocketProvider';
+import { useGamestateContext, statuses } from './Providers/GameStateProvider';
 import Nametag from './components/Nametag/Nametag';
 import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
 import Editor from './components/Editor';
 
-const uuidv1 = require('uuid/v1');
 let streakTimeout, saveContentTimeout;
 
 const sample = arr => {
@@ -43,7 +43,7 @@ if (process.env.NODE_ENV === 'development') {
     api = 'http://localhost:9000';
 }
 
-const initialParticipantData = {
+export const initialParticipantData = {
     animate: false,
     animationKey: 0,
     content: `<html>
@@ -54,26 +54,24 @@ const initialParticipantData = {
         
     </body>
 </html>`,
-    exclamation: '',
-    powerMode: false,
-    streak: 0,
 };
 
 const App = props => {
+    const history = useHistory();
     const context = useGamestateContext();
     const gamestate = context.gamestate;
     const game = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
+    const { name, uuid } = gamestate;
 
-    const [uuid, setUuid] = useState(localStorage.getItem('uuid') || '');
     const [streak, updateStreak] = useState(0);
     const refStreak = React.useRef(streak);
     refStreak.current = streak;
     const [animate, setAnimate] = useState(false);
-    const [content, setContent] = useState(
-        localStorage.getItem('content') || initialParticipantData.content
-    );
+
+    // Content kommer fra gamestate
+    const [content, setContent] = useState(initialParticipantData.content);
     const [animationKey, setAnimationKey] = useState(0);
-    const [name, setName] = useState(localStorage.getItem('name') || '');
+    // Name kommer fra gamestate
     const [exclamation, setExclamation] = useState(undefined);
     const [viewInstructions, setViewInstructions] = useState(false);
     const [powerMode, setPowerMode] = useState(false);
@@ -143,34 +141,12 @@ const App = props => {
         }
 
         saveContentTimeout = setTimeout(() => {
-            localStorage.setItem('content', value);
+            const newState = {
+                ...participantState,
+                content: value,
+            };
+            sessionStorage.setItem('participantState', JSON.stringify(newState));
         }, 300);
-    };
-
-    const getName = () => {
-        if (name !== '') {
-            return;
-        }
-
-        let newName = null;
-        while (newName === null) {
-            newName = window.prompt('Hva er navnet ditt?');
-        }
-        const newUuid = localStorage.getItem('uuid') || uuidv1();
-
-        setName(newName);
-        setUuid(newUuid);
-
-        localStorage.setItem('name', newName);
-        localStorage.setItem('uuid', newUuid);
-
-        if (newName !== '') {
-            postParticipantData({
-                ...initialParticipantData,
-                name: newName,
-                uuid: newUuid,
-            });
-        }
     };
 
     const shake = () => {
@@ -192,13 +168,12 @@ const App = props => {
     };
 
     useEffect(() => {
-        let name = localStorage.getItem('name');
-        if (!name) {
-            getName();
-        } else {
-            setName(localStorage.getItem('name'));
-        }
-
+        // let participantState = JSON.parse(sessionStorage.getItem('participantState'));
+        // let name = participantState.name;
+        // if (!name) {
+        //     console.info('Finner ikke navn i sessionstorage, redirecter til forside');
+        //     history.push('/');
+        // }
         window.requestAnimationFrame(onFrame);
     }, []);
 
@@ -350,7 +325,7 @@ const App = props => {
                             <h1>POWER MODE!</h1>
                         </div>
                     </div>
-                    <Nametag name={name} />}
+                    <Nametag name={name} />
                     <div className="button-bar">
                         <Button
                             onClick={() =>

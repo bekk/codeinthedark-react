@@ -1,7 +1,10 @@
 import React from 'react';
 
 function Nametag({ name }) {
-    return <div className="name-tag">{name}</div>;
+    if (!name) {
+        return null;
+    }
+    return <div className="name-tag">{name.trim()}</div>;
 }
 
 export default Nametag;

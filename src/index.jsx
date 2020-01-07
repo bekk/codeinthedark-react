@@ -3,19 +3,26 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Route, Router, Switch } from 'react-router';
 
-import SocketProvider from './SocketProvider/SocketProvider';
+import GameStateProvider from './Providers/GameStateProvider';
 import './index.less';
 import App from './App';
+import Welcome from './components/Welcome/Welcome';
 
 const AppMedRouter = () => {
     return (
-        <SocketProvider>
-            <Router history={createBrowserHistory()}>
-                <Switch>
-                    <Route path={'/'} component={App} />
-                </Switch>
-            </Router>
-        </SocketProvider>
+        <Router history={createBrowserHistory()}>
+            <Switch>
+                <Route exact path={'/'} component={Welcome} />
+                <Route
+                    path={'/game/:gamepin'}
+                    render={props => (
+                        <GameStateProvider gamepin={props.match.params.gamepin}>
+                            <App />
+                        </GameStateProvider>
+                    )}
+                />
+            </Switch>
+        </Router>
     );
 };
 
