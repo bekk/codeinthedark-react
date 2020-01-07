@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { createParticipant } from '../../api/api';
 import './Welcome.less';
-const uuidv1 = require('uuid/v1');
+import { useLocalStorage } from '../../hooks/useLocalstorage';
+const uuid = require('uuid/v1');
 
 const initialState = {
     name: '',
@@ -10,6 +11,10 @@ const initialState = {
 };
 
 const Welcome = () => {
+    const [localStorageData, setLocalStorageData] = useLocalStorage('participantState', {
+        uuid: '',
+        name: '',
+    });
     const [state, setState] = useState(initialState);
     const [error, setError] = useState('');
     const history = useHistory();
@@ -22,14 +27,13 @@ const Welcome = () => {
     };
 
     const onSubmit = state => {
-        const uuid = uuidv1();
-        state.uuid = uuid;
+        state.uuid = localStorageData.uuid ? localStorageData.uuid : uuid();
 
         setError('');
         createParticipant(state)
             .then(data => {
-                // Lagre til session storage
-                sessionStorage.setItem('participantState', JSON.stringify(data.data));
+                // Lagre til local storage
+                setLocalStorageData(data.data);
                 // redirecte bruker til venteskjerm...
                 history.push(`/game/${state.gamepin}`);
                 setState(initialState);
@@ -44,9 +48,9 @@ const Welcome = () => {
          * * Sjekk i api om gamepin finnes
          * * Sjekk om navn finnes i db fra før?
          * * Hvis gamepin ikke finnes, gi beskjed til bruker
-         * * Hvis gamepin finnes, skriv respons til session storage
+         * * Hvis gamepin finnes, skriv respons til local storage
          */
-        // 3. Skrive respons til session storage og naviger til riktig url
+        // 3. Skrive respons til local storage og naviger til riktig url
     };
 
     return (

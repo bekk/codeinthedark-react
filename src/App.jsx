@@ -1,10 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-<<<<<<< HEAD
-=======
 import { useSanity } from './hooks/useSanity';
->>>>>>> master
 import beautify from 'js-beautify';
 import { postParticipantData } from './api/api';
 import { useHistory } from 'react-router-dom';
@@ -24,13 +21,13 @@ import {
     POWER_MODE_ACTIVATION_THRESHOLD,
 } from './constants';
 
-import { useGamestateContext, statuses } from './SocketProvider/SocketProvider';
+import { useGamestateContext, statuses } from './Providers/GameStateProvider';
 import Nametag from './components/Nametag/Nametag';
 import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
 import Editor from './components/Editor';
+import { useLocalStorage } from './hooks/useLocalstorage';
 
-const uuidv1 = require('uuid/v1');
 let streakTimeout, saveContentTimeout;
 
 const sample = arr => {
@@ -46,7 +43,7 @@ if (process.env.NODE_ENV === 'development') {
     api = 'http://localhost:9000';
 }
 
-const initialParticipantData = {
+export const initialParticipantData = {
     animate: false,
     animationKey: 0,
     content: `<html>
@@ -65,12 +62,13 @@ const initialParticipantData = {
 const App = props => {
     const history = useHistory();
     const context = useGamestateContext();
-<<<<<<< HEAD
-    const participantState = JSON.parse(sessionStorage.getItem('participantState'));
-=======
     const gamestate = context.gamestate;
     const game = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
->>>>>>> master
+
+    const [participantState, setParticipantState] = useLocalStorage('participantState', {
+        uuid: '',
+        name: '',
+    });
 
     const [uuid, setUuid] = useState(participantState.uuid || '');
     const [streak, updateStreak] = useState(0);
