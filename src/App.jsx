@@ -2,14 +2,10 @@ import axios from 'axios';
 import classnames from 'classnames';
 import React, { useState, useEffect } from 'react';
 import beautify from 'js-beautify';
-<<<<<<< HEAD
 import { postParticipantData } from './api/api';
 import { useHistory } from 'react-router-dom';
-=======
 import { useSanity } from './hooks/useSanity';
-import { postParticipantData, createParticipant } from './api/api';
 
->>>>>>> feature/ventende-til-start
 import Instructions from './Instructions';
 import Result from './Result';
 import Countdown from './components/Countdown';
@@ -31,7 +27,6 @@ import Nametag from './components/Nametag/Nametag';
 import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
 import Editor from './components/Editor';
-import { useLocalStorage } from './hooks/useLocalstorage';
 
 let streakTimeout, saveContentTimeout;
 
@@ -48,13 +43,9 @@ if (process.env.NODE_ENV === 'development') {
     api = 'http://localhost:9000';
 }
 
-<<<<<<< HEAD
 export const initialParticipantData = {
     animate: false,
     animationKey: 0,
-=======
-const initialParticipantData = {
->>>>>>> feature/ventende-til-start
     content: `<html>
     <style>
     
@@ -66,30 +57,21 @@ const initialParticipantData = {
 };
 
 const App = props => {
-<<<<<<< HEAD
     const history = useHistory();
-=======
-    const gamepin = props.gamepin;
->>>>>>> feature/ventende-til-start
     const context = useGamestateContext();
     const gamestate = context.gamestate;
     const game = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
+    const { name, uuid } = gamestate;
 
-    const [participantState, setParticipantState] = useLocalStorage('participantState', {
-        uuid: '',
-        name: '',
-    });
-
-    const [uuid, setUuid] = useState(participantState.uuid || '');
     const [streak, updateStreak] = useState(0);
     const refStreak = React.useRef(streak);
     refStreak.current = streak;
     const [animate, setAnimate] = useState(false);
-    const [content, setContent] = useState(
-        participantState.content || initialParticipantData.content
-    );
+
+    // Content kommer fra gamestate
+    const [content, setContent] = useState(initialParticipantData.content);
     const [animationKey, setAnimationKey] = useState(0);
-    const [name, setName] = useState(participantState.name || '');
+    // Name kommer fra gamestate
     const [exclamation, setExclamation] = useState(undefined);
     const [viewInstructions, setViewInstructions] = useState(false);
     const [powerMode, setPowerMode] = useState(false);
@@ -167,31 +149,6 @@ const App = props => {
         }, 300);
     };
 
-<<<<<<< HEAD
-=======
-    const getName = () => {
-        if (name !== '') {
-            return;
-        }
-
-        let newName = null;
-        while (newName === null) {
-            newName = window.prompt('Hva er navnet ditt?');
-        }
-        const newUuid = localStorage.getItem('uuid') || uuidv1();
-
-        setName(newName);
-        setUuid(newUuid);
-
-        localStorage.setItem('name', newName);
-        localStorage.setItem('uuid', newUuid);
-
-        if (newName !== '') {
-            createParticipant({ name: newName, uuid: newUuid, gamepin });
-        }
-    };
-
->>>>>>> feature/ventende-til-start
     const shake = () => {
         if (!powerMode) {
             return;
@@ -211,12 +168,12 @@ const App = props => {
     };
 
     useEffect(() => {
-        let participantState = JSON.parse(sessionStorage.getItem('participantState'));
-        let name = participantState.name;
-        if (!name) {
-            console.info('Finner ikke navn i sessionstorage, redirecter til forside');
-            history.push('/');
-        }
+        // let participantState = JSON.parse(sessionStorage.getItem('participantState'));
+        // let name = participantState.name;
+        // if (!name) {
+        //     console.info('Finner ikke navn i sessionstorage, redirecter til forside');
+        //     history.push('/');
+        // }
         window.requestAnimationFrame(onFrame);
     }, []);
 

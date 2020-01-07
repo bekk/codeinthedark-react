@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { SocketService } from './SocketService';
+import { useLocalStorage } from '../hooks/useLocalstorage';
 
 export const actions = {
     SET_GAME_STATE: 'SET_GAME_STATE',
@@ -27,16 +28,22 @@ const gamestateReducer = (state, action) => {
     }
 };
 
-const SocketProvider = props => {
+const GameStateProvider = props => {
     const socketService = new SocketService();
+    const [participantState, setParticipantState] = useLocalStorage('participantState', {
+        uuid: '',
+        name: '',
+    });
     const [state, dispatch] = React.useReducer(gamestateReducer, {
         gamestate: {
             status: statuses.UNINITIALIZED,
+            name: '',
+            uuid: '',
         },
     });
 
     React.useEffect(() => {
-        socketService.init(props.gamepin, props.uuid);
+        socketService.init(props.gamepin, participantState.uuid);
         const receiveGameState = socketService.onGameState();
 
         receiveGameState.subscribe(data => {
@@ -62,4 +69,4 @@ export const useGamestateContext = () => {
     return context;
 };
 
-export default SocketProvider;
+export default GameStateProvider;
