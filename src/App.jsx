@@ -27,6 +27,7 @@ import Nametag from './components/Nametag/Nametag';
 import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
 import Editor from './components/Editor';
+import TimeLeft from './components/TimeLeft/TimeLeft';
 
 let streakTimeout, saveContentTimeout;
 
@@ -303,6 +304,8 @@ const App = ({ gamepin }) => {
                         })}
                     >
                         <Editor onChange={onChange} onLoad={onLoad} content={content} />
+
+                        <TimeLeft endTime={gamestate.endTime} />
 
                         <StreakContainer
                             animationKey={animationKey}
