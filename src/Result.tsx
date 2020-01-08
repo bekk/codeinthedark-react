@@ -1,6 +1,10 @@
 import * as React from 'react';
 
-const Result = ({ game }) => {
+interface Props {
+    game: any;
+}
+
+const Result = ({ game }: Props) => {
     return (
         <>
             <div className="result__label">Resultat</div>

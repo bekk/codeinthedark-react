@@ -5,7 +5,7 @@ import 'brace/theme/vibrant_ink';
 import 'brace/ext/searchbox';
 import 'brace/ext/language_tools';
 
-function Editor({ onChange, onLoad, content }) {
+function Editor({ onChange, onLoad, content }: any) {
     return (
         <AceEditor
             onLoad={onLoad}
@@ -22,7 +22,6 @@ function Editor({ onChange, onLoad, content }) {
                 useWorker: false,
                 showFoldWidgets: false,
             }}
-            session="manual"
             editorProps={{ $blockScrolling: Infinity }}
             onChange={onChange}
         />

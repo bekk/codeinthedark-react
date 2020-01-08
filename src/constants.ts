@@ -28,7 +28,7 @@ export const PARTICLE_VELOCITY_RANGE = {
     y: [-7, -3.5],
 };
 
-export const PARTICLE_COLORS = {
+export const PARTICLE_COLORS: any = {
     text: [255, 255, 255],
     'text.xml': [255, 255, 255],
     keyword: [0, 221, 255],

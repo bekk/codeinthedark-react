@@ -28,14 +28,14 @@ import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
 import Editor from './components/Editor';
 
-let streakTimeout, saveContentTimeout;
+let streakTimeout: any, saveContentTimeout: any;
 
-const sample = arr => {
+const sample = (arr: any) => {
     const len = arr == null ? 0 : arr.length;
     return len ? arr[Math.floor(Math.random() * len)] : undefined;
 };
 
-let particles = [];
+let particles: any = [];
 let particlePointer = 0;
 
 let api = 'https://codeinthedark-api.herokuapp.com';
@@ -56,9 +56,9 @@ export const initialParticipantData = {
 </html>`,
 };
 
-const App = ({ gamepin }) => {
+const App = ({ gamepin }: any) => {
     const history = useHistory();
-    const context = useGamestateContext();
+    const context: any = useGamestateContext();
     const gamestate = context.gamestate;
     const game = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
     const { name, uuid } = gamestate;
@@ -71,11 +71,10 @@ const App = ({ gamepin }) => {
     // Content kommer fra gamestate
     const [content, setContent] = useState(initialParticipantData.content);
     const [animationKey, setAnimationKey] = useState(0);
-    // Name kommer fra gamestate
     const [exclamation, setExclamation] = useState(undefined);
     const [viewInstructions, setViewInstructions] = useState(false);
     const [powerMode, setPowerMode] = useState(false);
-    const [editor, setEditor] = useState(undefined);
+    const [editor, setEditor] = useState<any>(undefined);
     const [lastDraw, setLastDraw] = useState(0);
     const [ctx, setCtx] = useState(undefined);
     const [inputType, setInputType] = useState(undefined);
@@ -102,7 +101,7 @@ const App = ({ gamepin }) => {
         return true;
     };
 
-    const onChange = (value, data) => {
+    const onChange = (value: any, data: any) => {
         const insertTextAction = data.action === 'insert';
 
         const pos = insertTextAction ? data.end : data.start;
@@ -137,7 +136,7 @@ const App = ({ gamepin }) => {
 
         saveContentTimeout = setTimeout(() => {
             const newState = {
-                ...participantState,
+                ...gamestate,
                 content: value,
             };
             sessionStorage.setItem('participantState', JSON.stringify(newState));
@@ -155,10 +154,13 @@ const App = ({ gamepin }) => {
         const x = intensity * (Math.random() > 0.5 ? -1 : 1);
         const y = intensity * (Math.random() > 0.5 ? -1 : 1);
 
-        document.getElementById('editor').style.margin = `${y}px ${x}px`;
+
+        const editor = document.getElementById('editor') as any;
+        editor.style.margin = `${y}px ${x}px`;
 
         setTimeout(() => {
-            document.getElementById('editor').style.margin;
+            // tslint:disable-next-line
+            editor.style.margin;
         }, 75);
     };
 
@@ -198,7 +200,7 @@ const App = ({ gamepin }) => {
         });
     }, [streak]);
 
-    const onLoad = editor => {
+    const onLoad = (editor: any) => {
         setEditor(editor);
     };
 
@@ -223,9 +225,9 @@ const App = ({ gamepin }) => {
         });
     };
 
-    const getParticleColor = type => PARTICLE_COLORS[type] || [255, 255, 255];
+    const getParticleColor = (type: any) => PARTICLE_COLORS[type] || [255, 255, 255];
 
-    const createParticle = (x, y, color) => ({
+    const createParticle = (x: any, y: any, color: any) => ({
         x,
         y,
         color,
@@ -242,9 +244,9 @@ const App = ({ gamepin }) => {
     });
 
     const drawParticles = () => {
-        let canvasContext = ctx;
+        let canvasContext = ctx as any;
         if (!ctx) {
-            const canvas = document.getElementById('canvas');
+            const canvas = document.getElementById('canvas') as any;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             canvasContext = canvas.getContext('2d');
@@ -252,7 +254,7 @@ const App = ({ gamepin }) => {
         }
 
         canvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        particles.forEach(particle => {
+        particles.forEach((particle: any) => {
             if (particle.alpha >= 0.1) {
                 particle.velocity.y += PARTICLE_GRAVITY;
                 particle.x += particle.velocity.x;
@@ -271,8 +273,9 @@ const App = ({ gamepin }) => {
         });
     };
 
-    const onFrame = timestamp => {
-        drawParticles(timestamp - lastDraw);
+    const onFrame = (timestamp: number) => {
+        // drawParticles(timestamp - lastDraw);
+        drawParticles();
         setLastDraw(timestamp);
         window.requestAnimationFrame(onFrame);
     };

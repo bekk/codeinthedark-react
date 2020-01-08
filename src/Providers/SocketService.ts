@@ -4,11 +4,11 @@ import { api } from '../App';
 
 export class SocketService {
     /* tslint:disable */
-    socket;
+    socket: any;
     /* tslint:enable */
 
-    init(gamepin, uuid) {
-        this.socket = io(`${api}/participant`, { query: { gamepin, uuid } });
+    init(gamepin: string, uuid: string) {
+        this.socket = io.connect(`${api}/participant`, { query: { gamepin, uuid } });
         return this;
     }
 

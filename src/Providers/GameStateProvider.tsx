@@ -14,7 +14,7 @@ export const statuses = {
 
 const GameStateContext = React.createContext(undefined);
 
-const gamestateReducer = (state, action) => {
+const gamestateReducer = (state: any, action: any) => {
     switch (action.type) {
         case actions.SET_GAME_STATE: {
             return {
@@ -28,7 +28,7 @@ const gamestateReducer = (state, action) => {
     }
 };
 
-const GameStateProvider = props => {
+const GameStateProvider = (props: any) => {
     const socketService = new SocketService();
     const [participantState, setParticipantState] = useLocalStorage('participantState', {
         uuid: '',
@@ -48,6 +48,7 @@ const GameStateProvider = props => {
         const receiveGameState = socketService.onGameState();
 
         receiveGameState.subscribe(data => {
+            console.log("Data", data);
             if (data) {
                 dispatch({
                     type: actions.SET_GAME_STATE,
