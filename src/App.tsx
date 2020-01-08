@@ -134,13 +134,13 @@ const App = ({ gamepin }: any) => {
             });
         }
 
-        saveContentTimeout = setTimeout(() => {
+        /*saveContentTimeout = setTimeout(() => {
             const newState = {
                 ...gamestate,
                 content: value,
             };
             sessionStorage.setItem('participantState', JSON.stringify(newState));
-        }, 300);
+        }, 300);*/
     };
 
     const shake = () => {
