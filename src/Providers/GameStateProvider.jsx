@@ -39,6 +39,7 @@ const GameStateProvider = props => {
             status: statuses.UNINITIALIZED,
             name: '',
             uuid: '',
+            gamepin: '',
         },
     });
 

@@ -6,23 +6,15 @@ if (process.env.NODE_ENV === 'development') {
     api = 'http://localhost:9000';
 }
 
-export const postParticipantData = throttle(
-    ({ animate, animationKey, content, exclamation, name, powerMode, streak, uuid }) => {
-        if (uuid !== '') {
-            axios.post(`${api}/participant-data`, {
-                animate,
-                animationKey,
-                content,
-                exclamation,
-                name,
-                uuid,
-                powerMode,
-                streak,
-            });
-        }
-    },
-    500
-);
+export const postParticipantData = throttle(({ content, uuid, gamepin }) => {
+    if (uuid !== '') {
+        axios.post(`${api}/participant-data`, {
+            gamepin,
+            content,
+            uuid,
+        });
+    }
+}, 500);
 
 export const createParticipant = participantData => {
     return axios.post(`${api}/participant/create`, {

@@ -56,7 +56,7 @@ export const initialParticipantData = {
 </html>`,
 };
 
-const App = props => {
+const App = ({ gamepin }) => {
     const history = useHistory();
     const context = useGamestateContext();
     const gamestate = context.gamestate;
@@ -129,13 +129,8 @@ const App = props => {
             }
         } else {
             postParticipantData({
-                animate,
-                animationKey,
+                gamepin,
                 content: value,
-                exclamation,
-                name,
-                powerMode,
-                streak,
                 uuid,
             });
         }
@@ -197,13 +192,8 @@ const App = props => {
         spawnParticles();
 
         postParticipantData({
-            animate,
-            animationKey,
+            gamepin,
             content,
-            exclamation: tmpExplamation,
-            name,
-            powerMode: tmpPowerMode,
-            streak,
             uuid,
         });
     }, [streak]);

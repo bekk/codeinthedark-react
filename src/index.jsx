@@ -17,7 +17,7 @@ const AppMedRouter = () => {
                     path={'/game/:gamepin'}
                     render={props => (
                         <GameStateProvider gamepin={props.match.params.gamepin}>
-                            <App />
+                            <App gamepin={props.match.params.gamepin} />
                         </GameStateProvider>
                     )}
                 />
