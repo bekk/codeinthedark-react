@@ -22,8 +22,13 @@
         "jsx": "react",
         "downlevelIteration": true
     },
+    "include": [
+        "./src/**/*.ts",
+        "./src/**/*.tsx",
+    ],
     "exclude": [
         "node_modules",
-        "webpack.*.js"
+        "webpack.*.js",
+        "typings"
     ]
 }

@@ -5,7 +5,13 @@ import 'brace/theme/vibrant_ink';
 import 'brace/ext/searchbox';
 import 'brace/ext/language_tools';
 
-function Editor({ onChange, onLoad, content }: any) {
+interface Props {
+    onChange: () => void;
+    onLoad: () => void;
+    content: string;
+}
+
+function Editor({ onChange, onLoad, content }: Props) {
     return (
         <AceEditor
             onLoad={onLoad}

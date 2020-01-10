@@ -1,57 +1,64 @@
-import * as React from 'react';
+import React, { Context, Dispatch, useReducer } from 'react';
 import { SocketService } from './SocketService';
 import { useLocalStorage } from '../hooks/useLocalstorage';
+import { createContext } from 'react';
+import { GameActions } from './actions';
+import { GameStatuses, AppState, Gamestate } from '../domain/types';
 
-export const actions = {
+export const Actions = {
     SET_GAME_STATE: 'SET_GAME_STATE',
 };
 
-export const statuses = {
+export const statuses: GameStatuses = {
     IN_PROGRESS: 'IN_PROGRESS',
     UNINITIALIZED: 'UNINITIALIZED',
     WAITING: 'WAITING',
 };
 
-const GameStateContext = React.createContext(undefined);
+const GameStateContext: Context<Dispatch<GameActions>> = createContext({} as any);
 
-const gamestateReducer = (state: any, action: any) => {
+export const initialState: AppState = {
+    status: statuses.UNINITIALIZED,
+    gamestate: {
+        name: "",
+        uuid: "",
+        content: "",
+        gamepin: "",
+    }
+}
+
+const gamestateReducer = (state: AppState, action: GameActions): AppState => {
     switch (action.type) {
-        case actions.SET_GAME_STATE: {
+        case "SET_GAME_STATE":
             return {
                 ...state,
-                gamestate: action.payload,
-            };
-        }
-        default: {
-            throw new Error(`Uhåndtert action type: ${action.type}`);
-        }
+                gamestate: action.payload
+            }
+        default:
+            return state;
     }
-};
+}
 
-const GameStateProvider = (props: any) => {
+interface Props {
+    children: Array<JSX.Element> | JSX.Element;
+}
+
+const GameStateProvider = ({ children }: Props) => {
     const socketService = new SocketService();
     const [participantState, setParticipantState] = useLocalStorage('participantState', {
         uuid: '',
         name: '',
     });
-    const [state, dispatch] = React.useReducer(gamestateReducer, {
-        gamestate: {
-            status: statuses.UNINITIALIZED,
-            name: '',
-            uuid: '',
-            gamepin: '',
-        },
-    });
+    const [state, dispatch] = useReducer(gamestateReducer, initialState);
 
     React.useEffect(() => {
-        socketService.init(props.gamepin, participantState.uuid);
+        socketService.init(state.gamestate.gamepin, participantState.uuid);
         const receiveGameState = socketService.onGameState();
 
-        receiveGameState.subscribe(data => {
-            console.log("Data", data);
+        receiveGameState.subscribe((data) => {
             if (data) {
                 dispatch({
-                    type: actions.SET_GAME_STATE,
+                    type: "SET_GAME_STATE",
                     payload: data,
                 });
             }
@@ -60,7 +67,7 @@ const GameStateProvider = (props: any) => {
         return () => socketService.disconnect();
     }, []);
 
-    return <GameStateContext.Provider value={state}>{props.children}</GameStateContext.Provider>;
+    return <GameStateContext.Provider value={null as any}>{children}</GameStateContext.Provider>;
 };
 
 export const useGamestateContext = () => {

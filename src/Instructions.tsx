@@ -1,8 +1,9 @@
 import React from 'react';
+import { SanityGame } from './domain/types';
 
 interface Props {
     closeInstructions: () => void;
-    game: any;
+    game: SanityGame;
 }
 
 const Instructions = ({ closeInstructions, game }: Props) => {

@@ -1,14 +1,19 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 
-module.exports = {
+const smp = new SpeedMeasurePlugin({
+    disable: !process.env.MEASURE
+});
+
+webpackConfig = {
     entry: "./src/index.tsx",
     output: {
-        filename: "./dist/bundle.js"
-        // path: path.join(__dirname, "production"),
+        path: path.join(__dirname, "dist"),
+        // filename: "./dist/bundle.js",
         // publicPath: "/"
     },
-    devtool: "source-map",
+    devtool: process.env.NODE_ENV === 'development' ? "eval-source-map" : "source-map",
     resolve: {
         extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
     },
@@ -18,15 +23,16 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 loader: ['awesome-typescript-loader?module=es6'],
-                exclude: [/node_modules/]
+                exclude: [/node_modules/, /public/]
             },
             {
                 test: /\.js$/,
                 loader: 'source-map-loader',
+                exclude: /node_modules/,
                 enforce: 'pre'
             },
             {
-                test: /\.(js|jsx)$/, use: "babel-loader"
+                test: /\.(js|jsx)$/, exclude: /node_modules/, use: "babel-loader"
             },
             {
                 test: /\.less$/,
@@ -50,12 +56,15 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: "src/index.html"
+            template: "./public/index.html"
         })
     ],
     devServer: {
         historyApiFallback: true,
-        contentBase: path.join(__dirname, "production"),
+        contentBase: path.join(__dirname, "public"),
+        compress: true,
         hot: true
     }
 };
+
+module.exports = smp.wrap(webpackConfig);
