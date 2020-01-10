@@ -40,9 +40,7 @@ const sample = (arr: any) => {
 let particles: any = [];
 let particlePointer = 0;
 
-setTimeout(() => {
-
-}, 300);
+setTimeout(() => {}, 300);
 
 let api = 'https://codeinthedark-api.herokuapp.com';
 if (process.env.NODE_ENV === 'development') {
@@ -61,6 +59,17 @@ export const initialParticipantData = {
     </body>
 </html>`,
 };
+
+interface PositionProps {
+    row: number;
+    column: number;
+}
+export interface DataProps {
+    action: string;
+    end: PositionProps;
+    start: PositionProps;
+    lines: Array<string>;
+}
 
 const App = ({ gamepin }: { gamepin: string }) => {
     const context: any = useGamestateContext();
@@ -82,7 +91,7 @@ const App = ({ gamepin }: { gamepin: string }) => {
     const [editor, setEditor] = useState<any>();
     const [lastDraw, setLastDraw] = useState(0);
     const [ctx, setCtx] = useState(undefined);
-    const [inputType, setInputType] = useState("");
+    const [inputType, setInputType] = useState('');
 
     document.onkeydown = event => {
         if ((event.key == 's' || event.key == 'S') && (event.ctrlKey || event.metaKey)) {
@@ -106,18 +115,6 @@ const App = ({ gamepin }: { gamepin: string }) => {
         return true;
     };
 
-
-    interface PositionProps {
-        row: number;
-        column: number;
-    }
-
-    interface DataProps {
-        action: string;
-        end: PositionProps;
-        start: PositionProps;
-        lines: Array<string>;
-    }
     const onChange = (value: string, data: DataProps) => {
         const insertTextAction = data.action === 'insert';
 
@@ -137,11 +134,11 @@ const App = ({ gamepin }: { gamepin: string }) => {
                 setAnimate(true);
                 setAnimationKey(animationKey + 1);
 
-                streakTimeout = setTimeout(() => {
+                streakTimeout = (setTimeout(() => {
                     updateStreak(0);
                     setAnimate(false);
                     setPowerMode(false);
-                }, 9800);
+                }, 9800) as unknown) as number;
             }
         } else {
             postParticipantData({
@@ -151,13 +148,13 @@ const App = ({ gamepin }: { gamepin: string }) => {
             });
         }
 
-        /*saveContentTimeout = setTimeout(() => {
+        saveContentTimeout = (setTimeout(() => {
             const newState = {
                 ...gamestate,
                 content: value,
             };
             sessionStorage.setItem('participantState', JSON.stringify(newState));
-        }, 300);*/
+        }, 300) as unknown) as number;
     };
 
     const shake = () => {
@@ -170,7 +167,6 @@ const App = ({ gamepin }: { gamepin: string }) => {
 
         const x = intensity * (Math.random() > 0.5 ? -1 : 1);
         const y = intensity * (Math.random() > 0.5 ? -1 : 1);
-
 
         const editor: HTMLElement | null = document.getElementById('editor');
         if (editor) {
@@ -241,7 +237,8 @@ const App = ({ gamepin }: { gamepin: string }) => {
         });
     };
 
-    const getParticleColor = (type: string): Array<number> => PARTICLE_COLORS[type] || [255, 255, 255];
+    const getParticleColor = (type: string): Array<number> =>
+        PARTICLE_COLORS[type] || [255, 255, 255];
 
     const createParticle = (x: any, y: any, color: any) => ({
         x,

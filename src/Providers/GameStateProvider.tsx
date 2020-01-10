@@ -20,24 +20,24 @@ const GameStateContext: Context<Dispatch<GameActions>> = createContext({} as any
 export const initialState: AppState = {
     status: statuses.UNINITIALIZED,
     gamestate: {
-        name: "",
-        uuid: "",
-        content: "",
-        gamepin: "",
-    }
-}
+        name: '',
+        uuid: '',
+        content: '',
+        gamepin: '',
+    },
+};
 
 const gamestateReducer = (state: AppState, action: GameActions): AppState => {
     switch (action.type) {
-        case "SET_GAME_STATE":
+        case 'SET_GAME_STATE':
             return {
                 ...state,
-                gamestate: action.payload
-            }
+                gamestate: action.payload,
+            };
         default:
             return state;
     }
-}
+};
 
 interface Props {
     children: Array<JSX.Element> | JSX.Element;
@@ -55,11 +55,11 @@ const GameStateProvider = ({ children }: Props) => {
         socketService.init(state.gamestate.gamepin, participantState.uuid);
         const receiveGameState = socketService.onGameState();
 
-        receiveGameState.subscribe((data) => {
+        receiveGameState.subscribe(data => {
             if (data) {
                 dispatch({
-                    type: "SET_GAME_STATE",
-                    payload: data,
+                    type: 'SET_GAME_STATE',
+                    payload: (data as unknown) as Gamestate, // Må fikse riktig datatype
                 });
             }
         });

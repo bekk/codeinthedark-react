@@ -1,70 +1,72 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 
 const smp = new SpeedMeasurePlugin({
-    disable: !process.env.MEASURE
+    disable: !process.env.MEASURE,
 });
 
 webpackConfig = {
-    entry: "./src/index.tsx",
+    entry: './src/index.tsx',
     output: {
-        path: path.join(__dirname, "dist"),
+        path: path.join(__dirname, 'dist'),
         // filename: "./dist/bundle.js",
         // publicPath: "/"
     },
-    devtool: process.env.NODE_ENV === 'development' ? "eval-source-map" : "source-map",
+    devtool: process.env.NODE_ENV === 'development' ? 'eval-source-map' : 'source-map',
     resolve: {
-        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+        extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
     },
     module: {
-
         rules: [
             {
                 test: /\.tsx?$/,
                 loader: ['awesome-typescript-loader?module=es6'],
-                exclude: [/node_modules/, /public/]
+                exclude: [/node_modules/, /public/],
             },
             {
                 test: /\.js$/,
                 loader: 'source-map-loader',
                 exclude: /node_modules/,
-                enforce: 'pre'
+                enforce: 'pre',
             },
             {
-                test: /\.(js|jsx)$/, exclude: /node_modules/, use: "babel-loader"
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: 'babel-loader',
             },
             {
                 test: /\.less$/,
                 use: [
-                    { loader: "style-loader" },
+                    { loader: 'style-loader' },
                     {
-                        loader: "css-loader"
+                        loader: 'css-loader',
                     },
-                    { loader: "less-loader" }
-                ]
+                    { loader: 'less-loader' },
+                ],
             },
             {
                 test: /\.(svg|ttf|png)$/i,
                 use: [
                     {
-                        loader: "url-loader"
-                    }
-                ]
-            }
-        ]
+                        loader: 'url-loader',
+                    },
+                ],
+            },
+        ],
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: "./public/index.html"
-        })
+            template: './public/index.html',
+        }),
     ],
     devServer: {
         historyApiFallback: true,
-        contentBase: path.join(__dirname, "public"),
+        contentBase: path.join(__dirname, 'public'),
         compress: true,
-        hot: true
-    }
+        hot: true,
+        open: true,
+    },
 };
 
 module.exports = smp.wrap(webpackConfig);
