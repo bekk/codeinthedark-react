@@ -21,19 +21,19 @@ webpackConfig = {
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: ['awesome-typescript-loader?module=es6'],
+                use: ['cache-loader', 'awesome-typescript-loader?module=es6'],
                 exclude: [/node_modules/, /public/],
             },
             {
                 test: /\.js$/,
-                loader: 'source-map-loader',
+                use: 'source-map-loader',
                 exclude: /node_modules/,
                 enforce: 'pre',
             },
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use: 'babel-loader',
+                use: ['cache-loader', 'babel-loader'],
             },
             {
                 test: /\.less$/,
