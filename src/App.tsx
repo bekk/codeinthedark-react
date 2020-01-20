@@ -3,7 +3,6 @@ import classnames from 'classnames';
 import React, { useState, useEffect } from 'react';
 import beautify from 'js-beautify';
 import { postParticipantData } from './api/api';
-import { useHistory } from 'react-router-dom';
 import { useSanity } from './hooks/useSanity';
 
 import Instructions from './Instructions';
@@ -27,6 +26,7 @@ import Nametag from './components/Nametag/Nametag';
 import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
 import Editor from './components/Editor';
+import TimeLeft from './components/TimeLeft/TimeLeft';
 import { SanityGame, AppState } from './domain/types';
 
 let streakTimeout: number;
@@ -310,15 +310,17 @@ const App = ({ gamepin }: { gamepin: string }) => {
                 )}
                 <div className="main-content">
                     <Countdown
-                        waiting={context.gamestate.status !== statuses.IN_PROGRESS}
+                        waiting={context.status !== statuses.IN_PROGRESS}
                         tekst={`Er du klar ${name}?`}
                     />
                     <div
                         className={classnames('editor-content', {
-                            waiting: context.gamestate.status !== statuses.IN_PROGRESS,
+                            waiting: context.status !== statuses.IN_PROGRESS,
                         })}
                     >
                         <Editor onChange={onChange} onLoad={onLoad} content={content} />
+
+                        <TimeLeft endTime={gamestate.endTime} />
 
                         <StreakContainer
                             animationKey={animationKey}

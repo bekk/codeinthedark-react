@@ -72,8 +72,8 @@ const GameStateProvider = ({ children }: Props) => {
     return <GameStateContext.Provider value={state}>{children}</GameStateContext.Provider>;
 };
 
-export const useGamestateContext = () => {
-    const context = useContext(GameStateContext);
+export const useGamestateContext = (): any => {
+    const context = React.useContext(GameStateContext);
     if (context === undefined) {
         throw new Error('useGamestateContext må brukes inne i en GameStateContext');
     }

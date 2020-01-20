@@ -8,6 +8,8 @@ export interface Gamestate {
     uuid: string;
     content: string;
     gamepin: string;
+    endTime: string;
+    startTime: string;
 }
 
 export interface ParticleColors {
