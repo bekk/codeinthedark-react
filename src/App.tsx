@@ -21,13 +21,13 @@ import {
     POWER_MODE_ACTIVATION_THRESHOLD,
 } from './constants';
 
-import { useGamestateContext, statuses } from './Providers/GameStateProvider';
+import { useGamestateContext } from './Providers/GameStateProvider';
 import Nametag from './components/Nametag/Nametag';
 import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
 import Editor from './components/Editor';
 import TimeLeft from './components/TimeLeft/TimeLeft';
-import { SanityGame, AppState } from './domain/types';
+import { SanityGame, AppState, GameStatuses } from './domain/types';
 
 let streakTimeout: number;
 let saveContentTimeout: number;
@@ -47,19 +47,6 @@ if (process.env.NODE_ENV === 'development') {
     api = 'http://localhost:9000';
 }
 
-export const initialParticipantData = {
-    animate: false,
-    animationKey: 0,
-    content: `<html>
-    <style>
-    
-    </style>
-    <body>
-        
-    </body>
-</html>`,
-};
-
 interface PositionProps {
     row: number;
     column: number;
@@ -74,9 +61,8 @@ export interface DataProps {
 const App = ({ gamepin }: { gamepin: string }) => {
     const context: AppState = useGamestateContext();
     const gamestate = context.gamestate;
-    const game: SanityGame = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
+    const [game, setFetch] = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`);
     const { name, uuid } = gamestate;
-    console.log(gamestate);
 
     const [streak, updateStreak] = useState(0);
     const refStreak = React.useRef(streak);
@@ -84,7 +70,7 @@ const App = ({ gamepin }: { gamepin: string }) => {
     const [animate, setAnimate] = useState(false);
 
     // Content kommer fra gamestate
-    const [content, setContent] = useState(initialParticipantData.content);
+    const [content, setContent] = useState(gamestate.content);
     const [animationKey, setAnimationKey] = useState(0);
     const [exclamation, setExclamation] = useState(undefined);
     const [viewInstructions, setViewInstructions] = useState(false);
@@ -94,22 +80,31 @@ const App = ({ gamepin }: { gamepin: string }) => {
     const [ctx, setCtx] = useState(undefined);
     const [inputType, setInputType] = useState('');
 
+    const setAndBeautifyContent = (content: string) => {
+        setContent(
+            beautify.html(content, {
+                indent_size: 4,
+                indent_char: ' ',
+                max_preserve_newlines: 10,
+                preserve_newlines: true,
+                indent_scripts: 'keep',
+                end_with_newline: true,
+                wrap_line_length: 120,
+                indent_inner_html: true,
+            })
+        );
+    };
+
+    React.useEffect(() => {
+        setAndBeautifyContent(gamestate.content);
+        setFetch(true);
+    }, [gamestate.content]);
+
     document.onkeydown = event => {
         if ((event.key == 's' || event.key == 'S') && (event.ctrlKey || event.metaKey)) {
             event.preventDefault();
 
-            setContent(
-                beautify.html(content, {
-                    indent_size: 4,
-                    indent_char: ' ',
-                    max_preserve_newlines: 10,
-                    preserve_newlines: true,
-                    indent_scripts: 'keep',
-                    end_with_newline: true,
-                    wrap_line_length: 120,
-                    indent_inner_html: true,
-                })
-            );
+            setAndBeautifyContent(content);
             return false;
         }
 
@@ -298,24 +293,24 @@ const App = ({ gamepin }: { gamepin: string }) => {
             <>
                 <div
                     className={classnames('background', {
-                        waiting: context.gamestate.status !== statuses.IN_PROGRESS,
+                        waiting: context.gamestate.status !== GameStatuses.IN_PROGRESS,
                     })}
                 />
                 <canvas id="canvas" />
                 {viewInstructions && (
                     <Instructions
                         closeInstructions={() => setViewInstructions(false)}
-                        game={game}
+                        game={game[0]}
                     />
                 )}
                 <div className="main-content">
                     <Countdown
-                        waiting={context.gamestate.status !== statuses.IN_PROGRESS}
+                        waiting={context.gamestate.status !== GameStatuses.IN_PROGRESS}
                         tekst={`Er du klar ${name}?`}
                     />
                     <div
                         className={classnames('editor-content', {
-                            waiting: context.gamestate.status !== statuses.IN_PROGRESS,
+                            waiting: context.gamestate.status !== GameStatuses.IN_PROGRESS,
                         })}
                     >
                         <Editor onChange={onChange} onLoad={onLoad} content={content} />
@@ -349,7 +344,7 @@ const App = ({ gamepin }: { gamepin: string }) => {
                     </div>
                 </div>
 
-                <Result game={game} />
+                <Result game={game[0]} />
             </>
         </div>
     );

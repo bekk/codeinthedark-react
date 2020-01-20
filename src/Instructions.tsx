@@ -3,7 +3,7 @@ import { SanityGame } from './domain/types';
 
 interface Props {
     closeInstructions: () => void;
-    game: SanityGame;
+    game?: SanityGame;
 }
 
 const Instructions = ({ closeInstructions, game }: Props) => {
@@ -27,7 +27,7 @@ const Instructions = ({ closeInstructions, game }: Props) => {
                     <p>--- Ressurser ---</p>
                     <ul>
                         <li>Tekster kan kopieres fra resultatet.</li>
-                        {game.asset_texts.map((help: string, index: number) => {
+                        {game?.asset_texts.map((help: string, index: number) => {
                             return <li key={index}>{help}</li>;
                         })}
                     </ul>

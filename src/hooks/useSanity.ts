@@ -9,12 +9,14 @@ const client = sanityClient({
 
 export const useSanity = (query: string) => {
     const [content, setContent] = React.useState([]);
+    const [fetch, setFetch] = React.useState(false);
 
     React.useEffect(() => {
         client.fetch(query).then((fetchedContent: any) => {
             setContent(fetchedContent);
         });
-    }, []);
+        setFetch(false);
+    }, [fetch]);
 
-    return content;
+    return [content, setFetch];
 };

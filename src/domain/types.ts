@@ -10,7 +10,7 @@ export interface Gamestate {
     endTime: string;
     startTime: string;
     gameId: string;
-    status: keyof GameStatuses;
+    status: GameStatuses;
 }
 
 export interface ParticleColors {

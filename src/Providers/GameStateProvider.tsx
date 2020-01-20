@@ -1,19 +1,13 @@
-import React, { Context, Dispatch, useReducer, useContext, useEffect } from 'react';
+import React, { Context, useReducer, useContext, useEffect } from 'react';
 import { SocketService } from './SocketService';
 import { useLocalStorage } from '../hooks/useLocalstorage';
 import { createContext } from 'react';
 import { GameActions } from './actions';
 import { GameStatuses, AppState, Gamestate } from '../domain/types';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 
 export const Actions = {
     SET_GAME_STATE: 'SET_GAME_STATE',
-};
-
-export const statuses: GameStatuses = {
-    CREATED: 'CREATED',
-    IN_PROGRESS: 'IN_PROGRESS',
-    FINISHED: 'FINISHED',
 };
 
 export const initialState: AppState = {
@@ -25,7 +19,7 @@ export const initialState: AppState = {
         endTime: '',
         startTime: '',
         gameId: '',
-        status: '',
+        status: GameStatuses.CREATED,
     },
 };
 
@@ -61,8 +55,6 @@ const GameStateProvider = ({ children }: Props) => {
         socketService.init(gamepin, participantState.uuid);
         const receiveGameState = socketService.onGameState();
         receiveGameState.subscribe(data => {
-            console.log('Data', data);
-            '';
             if (data) {
                 dispatch({
                     type: 'SET_GAME_STATE',
