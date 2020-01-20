@@ -10,8 +10,8 @@ webpackConfig = {
     entry: './src/index.tsx',
     output: {
         path: path.join(__dirname, 'dist'),
-        // filename: "./dist/bundle.js",
-        // publicPath: "/"
+        filename: './dist/bundle.js',
+        publicPath: '/',
     },
     devtool: process.env.NODE_ENV === 'development' ? 'eval-source-map' : 'source-map',
     resolve: {

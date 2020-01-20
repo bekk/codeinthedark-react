@@ -31,16 +31,18 @@ interface Props {
 }
 
 const GameStates = ({ gamepin }: Props) => {
-    const context = useGamestateContext() as any;
+    const context = useGamestateContext();
 
     if (context.gamestate) {
-        switch (context.gamestate.status) {
-            case 'NOT_STARTED':
+        switch (context.status) {
+            case 'UNINITIALIZED':
                 return <App gamepin={gamepin} />;
             case 'IN_PROGRESS':
                 return <App gamepin={gamepin} />;
             case 'FINISHED':
                 return <div style={{ color: 'white' }}>FINISHED!</div>;
+            case 'WAITING':
+                return <div style={{ color: 'white' }}>Waiting...</div>;
             default:
                 return null;
         }

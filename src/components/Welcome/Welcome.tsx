@@ -36,9 +36,9 @@ const Welcome = () => {
                 setLocalStorageData(data.data);
                 // redirecte bruker til venteskjerm...
                 history.push(`/game/${state.gamepin}`);
-                setState(initialState);
             })
             .catch(error => {
+                console.log(error);
                 if (error.response.data.message) {
                     setError(error.response.data.message);
                 }

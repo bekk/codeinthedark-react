@@ -27,7 +27,7 @@ import Nametag from './components/Nametag/Nametag';
 import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
 import Editor from './components/Editor';
-import { SanityGame } from './domain/types';
+import { SanityGame, AppState } from './domain/types';
 
 let streakTimeout: number;
 let saveContentTimeout: number;
@@ -72,7 +72,7 @@ export interface DataProps {
 }
 
 const App = ({ gamepin }: { gamepin: string }) => {
-    const context: any = useGamestateContext();
+    const context: AppState = useGamestateContext();
     const gamestate = context.gamestate;
     const game: SanityGame = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
     const { name, uuid } = gamestate;

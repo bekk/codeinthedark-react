@@ -1,4 +1,4 @@
-import React, { Context, Dispatch, useReducer } from 'react';
+import React, { Context, Dispatch, useReducer, useContext, useEffect } from 'react';
 import { SocketService } from './SocketService';
 import { useLocalStorage } from '../hooks/useLocalstorage';
 import { createContext } from 'react';
@@ -13,9 +13,8 @@ export const statuses: GameStatuses = {
     IN_PROGRESS: 'IN_PROGRESS',
     UNINITIALIZED: 'UNINITIALIZED',
     WAITING: 'WAITING',
+    FINISHED: 'FINISHED',
 };
-
-const GameStateContext: Context<Dispatch<GameActions>> = createContext({} as any);
 
 export const initialState: AppState = {
     status: statuses.UNINITIALIZED,
@@ -26,6 +25,8 @@ export const initialState: AppState = {
         gamepin: '',
     },
 };
+
+const GameStateContext: Context<AppState> = createContext({} as any);
 
 const gamestateReducer = (state: AppState, action: GameActions): AppState => {
     switch (action.type) {
@@ -51,11 +52,12 @@ const GameStateProvider = ({ children }: Props) => {
     });
     const [state, dispatch] = useReducer(gamestateReducer, initialState);
 
-    React.useEffect(() => {
+    useEffect(() => {
         socketService.init(state.gamestate.gamepin, participantState.uuid);
         const receiveGameState = socketService.onGameState();
 
         receiveGameState.subscribe(data => {
+            console.log('Data', data);
             if (data) {
                 dispatch({
                     type: 'SET_GAME_STATE',
@@ -67,11 +69,11 @@ const GameStateProvider = ({ children }: Props) => {
         return () => socketService.disconnect();
     }, []);
 
-    return <GameStateContext.Provider value={null as any}>{children}</GameStateContext.Provider>;
+    return <GameStateContext.Provider value={state}>{children}</GameStateContext.Provider>;
 };
 
 export const useGamestateContext = () => {
-    const context = React.useContext(GameStateContext);
+    const context = useContext(GameStateContext);
     if (context === undefined) {
         throw new Error('useGamestateContext må brukes inne i en GameStateContext');
     }

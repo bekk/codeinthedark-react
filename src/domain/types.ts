@@ -11,19 +11,20 @@ export interface Gamestate {
 }
 
 export interface ParticleColors {
-    [key: string]: Array<number>
+    [key: string]: Array<number>;
 }
 
 export interface SanityGame {
     name: string;
     id: string;
-    level: 'lett' | 'medium' | 'vanskelig',
+    level: 'lett' | 'medium' | 'vanskelig';
     result_html: string;
-    asset_texts: Array<string>
+    asset_texts: Array<string>;
 }
 
 export interface GameStatuses {
-    IN_PROGRESS: 'IN_PROGRESS',
-    UNINITIALIZED: 'UNINITIALIZED',
-    WAITING: 'WAITING'
+    IN_PROGRESS: 'IN_PROGRESS';
+    UNINITIALIZED: 'UNINITIALIZED';
+    WAITING: 'WAITING';
+    FINISHED: 'FINISHED';
 }
