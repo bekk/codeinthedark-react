@@ -4,8 +4,15 @@ import 'brace/mode/html';
 import 'brace/theme/vibrant_ink';
 import 'brace/ext/searchbox';
 import 'brace/ext/language_tools';
+import { DataProps } from '../App';
 
-function Editor({ onChange, onLoad, content }: any) {
+interface Props {
+    onChange: (value: string, data: DataProps) => void;
+    onLoad: (editor: any) => void;
+    content: string;
+}
+
+function Editor({ onChange, onLoad, content }: Props) {
     return (
         <AceEditor
             onLoad={onLoad}

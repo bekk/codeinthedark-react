@@ -16,7 +16,7 @@ const AppMedRouter = () => {
                 <Route
                     path={'/game/:gamepin'}
                     render={props => (
-                        <GameStateProvider gamepin={props.match.params.gamepin}>
+                        <GameStateProvider>
                             <GameStates gamepin={props.match.params.gamepin} />
                         </GameStateProvider>
                     )}
@@ -26,8 +26,12 @@ const AppMedRouter = () => {
     );
 };
 
-const GameStates = ({ gamepin }: any) => {
-    const context = useGamestateContext();
+interface Props {
+    gamepin: string;
+}
+
+const GameStates = ({ gamepin }: Props) => {
+    const context = useGamestateContext() as any;
 
     if (context.gamestate) {
         switch (context.gamestate.status) {

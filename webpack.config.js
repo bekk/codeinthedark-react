@@ -1,61 +1,72 @@
-const path = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 
-module.exports = {
-    entry: "./src/index.tsx",
+const smp = new SpeedMeasurePlugin({
+    disable: !process.env.MEASURE,
+});
+
+webpackConfig = {
+    entry: './src/index.tsx',
     output: {
-        filename: "./dist/bundle.js"
-        // path: path.join(__dirname, "production"),
+        path: path.join(__dirname, 'dist'),
+        // filename: "./dist/bundle.js",
         // publicPath: "/"
     },
-    devtool: "source-map",
+    devtool: process.env.NODE_ENV === 'development' ? 'eval-source-map' : 'source-map',
     resolve: {
-        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+        extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
     },
     module: {
-
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: ['awesome-typescript-loader?module=es6'],
-                exclude: [/node_modules/]
+                use: ['cache-loader', 'awesome-typescript-loader?module=es6'],
+                exclude: [/node_modules/, /public/],
             },
             {
                 test: /\.js$/,
-                loader: 'source-map-loader',
-                enforce: 'pre'
+                use: 'source-map-loader',
+                exclude: /node_modules/,
+                enforce: 'pre',
             },
             {
-                test: /\.(js|jsx)$/, use: "babel-loader"
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: ['cache-loader', 'babel-loader'],
             },
             {
                 test: /\.less$/,
                 use: [
-                    { loader: "style-loader" },
+                    { loader: 'style-loader' },
                     {
-                        loader: "css-loader"
+                        loader: 'css-loader',
                     },
-                    { loader: "less-loader" }
-                ]
+                    { loader: 'less-loader' },
+                ],
             },
             {
                 test: /\.(svg|ttf|png)$/i,
                 use: [
                     {
-                        loader: "url-loader"
-                    }
-                ]
-            }
-        ]
+                        loader: 'url-loader',
+                    },
+                ],
+            },
+        ],
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: "src/index.html"
-        })
+            template: './public/index.html',
+        }),
     ],
     devServer: {
         historyApiFallback: true,
-        contentBase: path.join(__dirname, "production"),
-        hot: true
-    }
+        contentBase: path.join(__dirname, 'public'),
+        compress: true,
+        hot: true,
+        open: true,
+    },
 };
+
+module.exports = smp.wrap(webpackConfig);

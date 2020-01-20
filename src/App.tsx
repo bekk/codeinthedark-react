@@ -27,8 +27,10 @@ import Nametag from './components/Nametag/Nametag';
 import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
 import Editor from './components/Editor';
+import { SanityGame } from './domain/types';
 
-let streakTimeout: any, saveContentTimeout: any;
+let streakTimeout: number;
+let saveContentTimeout: number;
 
 const sample = (arr: any) => {
     const len = arr == null ? 0 : arr.length;
@@ -37,6 +39,8 @@ const sample = (arr: any) => {
 
 let particles: any = [];
 let particlePointer = 0;
+
+setTimeout(() => {}, 300);
 
 let api = 'https://codeinthedark-api.herokuapp.com';
 if (process.env.NODE_ENV === 'development') {
@@ -56,11 +60,21 @@ export const initialParticipantData = {
 </html>`,
 };
 
-const App = ({ gamepin }: any) => {
-    const history = useHistory();
+interface PositionProps {
+    row: number;
+    column: number;
+}
+export interface DataProps {
+    action: string;
+    end: PositionProps;
+    start: PositionProps;
+    lines: Array<string>;
+}
+
+const App = ({ gamepin }: { gamepin: string }) => {
     const context: any = useGamestateContext();
     const gamestate = context.gamestate;
-    const game = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
+    const game: SanityGame = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
     const { name, uuid } = gamestate;
 
     const [streak, updateStreak] = useState(0);
@@ -74,10 +88,10 @@ const App = ({ gamepin }: any) => {
     const [exclamation, setExclamation] = useState(undefined);
     const [viewInstructions, setViewInstructions] = useState(false);
     const [powerMode, setPowerMode] = useState(false);
-    const [editor, setEditor] = useState<any>(undefined);
+    const [editor, setEditor] = useState<any>();
     const [lastDraw, setLastDraw] = useState(0);
     const [ctx, setCtx] = useState(undefined);
-    const [inputType, setInputType] = useState(undefined);
+    const [inputType, setInputType] = useState('');
 
     document.onkeydown = event => {
         if ((event.key == 's' || event.key == 'S') && (event.ctrlKey || event.metaKey)) {
@@ -101,7 +115,7 @@ const App = ({ gamepin }: any) => {
         return true;
     };
 
-    const onChange = (value: any, data: any) => {
+    const onChange = (value: string, data: DataProps) => {
         const insertTextAction = data.action === 'insert';
 
         const pos = insertTextAction ? data.end : data.start;
@@ -120,11 +134,11 @@ const App = ({ gamepin }: any) => {
                 setAnimate(true);
                 setAnimationKey(animationKey + 1);
 
-                streakTimeout = setTimeout(() => {
+                streakTimeout = (setTimeout(() => {
                     updateStreak(0);
                     setAnimate(false);
                     setPowerMode(false);
-                }, 9800);
+                }, 9800) as unknown) as number;
             }
         } else {
             postParticipantData({
@@ -134,13 +148,13 @@ const App = ({ gamepin }: any) => {
             });
         }
 
-        /*saveContentTimeout = setTimeout(() => {
+        saveContentTimeout = (setTimeout(() => {
             const newState = {
                 ...gamestate,
                 content: value,
             };
             sessionStorage.setItem('participantState', JSON.stringify(newState));
-        }, 300);*/
+        }, 300) as unknown) as number;
     };
 
     const shake = () => {
@@ -154,14 +168,15 @@ const App = ({ gamepin }: any) => {
         const x = intensity * (Math.random() > 0.5 ? -1 : 1);
         const y = intensity * (Math.random() > 0.5 ? -1 : 1);
 
+        const editor: HTMLElement | null = document.getElementById('editor');
+        if (editor) {
+            editor.style.margin = `${y}px ${x}px`;
+        }
 
-        const editor = document.getElementById('editor') as any;
-        editor.style.margin = `${y}px ${x}px`;
-
-        setTimeout(() => {
-            // tslint:disable-next-line
-            editor.style.margin;
-        }, 75);
+        // setTimeout(() => {
+        //     // tslint:disable-next-line
+        //     editor.style.margin;
+        // }, 75);
     };
 
     useEffect(() => {
@@ -175,18 +190,15 @@ const App = ({ gamepin }: any) => {
     }, []);
 
     useEffect(() => {
-        let tmpExplamation = exclamation;
-        let tmpPowerMode = refStreak.current === 0 ? false : powerMode;
         if (streak > 0 && (streak + 1) % 10 === 0) {
             const newExclamation = sample(EXCLAMATIONS);
             setExclamation(newExclamation);
-            tmpExplamation = newExclamation;
         }
 
         if (streak > POWER_MODE_ACTIVATION_THRESHOLD && !powerMode) {
             setPowerMode(true);
-            tmpPowerMode = true;
         }
+
         shake();
         if (editor) {
             getCursorPosition();
@@ -225,7 +237,8 @@ const App = ({ gamepin }: any) => {
         });
     };
 
-    const getParticleColor = (type: any) => PARTICLE_COLORS[type] || [255, 255, 255];
+    const getParticleColor = (type: string): Array<number> =>
+        PARTICLE_COLORS[type] || [255, 255, 255];
 
     const createParticle = (x: any, y: any, color: any) => ({
         x,

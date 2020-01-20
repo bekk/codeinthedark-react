@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { SanityGame } from './domain/types';
 
 interface Props {
-    game: any;
+    game: SanityGame;
 }
 
 const Result = ({ game }: Props) => {
