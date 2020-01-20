@@ -1,6 +1,10 @@
 import React from 'react';
 
-function Nametag({ name }) {
+interface Props {
+    name: string;
+}
+
+function Nametag({ name }: Props) {
     if (!name) {
         return null;
     }

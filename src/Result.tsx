@@ -1,6 +1,11 @@
 import * as React from 'react';
+import { SanityGame } from './domain/types';
 
-const Result = ({ game }) => {
+interface Props {
+    game: SanityGame;
+}
+
+const Result = ({ game }: Props) => {
     return (
         <>
             <div className="result__label">Resultat</div>

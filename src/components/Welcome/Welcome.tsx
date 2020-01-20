@@ -19,14 +19,14 @@ const Welcome = () => {
     const [error, setError] = useState('');
     const history = useHistory();
 
-    const updateState = (key, value) => {
+    const updateState = (key: string, value: string) => {
         setState({
             ...state,
             [key]: value,
         });
     };
 
-    const onSubmit = state => {
+    const onSubmit = (state: any) => {
         state.uuid = localStorageData.uuid ? localStorageData.uuid : uuid();
 
         setError('');
@@ -83,7 +83,7 @@ const Welcome = () => {
                         name="gamepin"
                         id="gamepin"
                         required
-                        maxLength="4"
+                        maxLength={4}
                         value={state.gamepin}
                         onChange={e => updateState('gamepin', e.currentTarget.value)}
                         placeholder="Firesifret game-PIN"

@@ -5,3 +5,4 @@ production
 .tmp/
 
 npm-debug.log
+dist

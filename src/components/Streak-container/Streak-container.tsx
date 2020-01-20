@@ -1,6 +1,6 @@
 import React from 'react';
 
-function StreakContainer({ animationKey, streak, animate, exclamation }) {
+function StreakContainer({ animationKey, streak, animate, exclamation }: any) {
     return (
         <div className="streak-container">
             <div className="current">Combo</div>

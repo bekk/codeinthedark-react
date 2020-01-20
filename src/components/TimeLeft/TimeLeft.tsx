@@ -1,7 +1,11 @@
 import * as React from 'react';
-import * as moment from 'moment';
+import moment from 'moment';
 
-const TimeLeft = ({ endTime }) => {
+interface IProps {
+    endTime: string;
+}
+
+const TimeLeft: React.StatelessComponent<IProps> = ({ endTime }) => {
     const timeLeft = moment.duration(moment(endTime).diff(moment())).asMilliseconds();
     return (
         <div className={'game-countdown'}>{`Gjenstår ${moment.utc(timeLeft).format('mm:ss')}`}</div>

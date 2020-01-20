@@ -2,7 +2,12 @@ import React from 'react';
 import classnames from 'classnames';
 import './countdown.less';
 
-function Countdown({ tekst, waiting }) {
+interface Props {
+    tekst: string;
+    waiting: boolean;
+}
+
+function Countdown({ tekst, waiting }: Props) {
     if (!waiting) return null;
 
     return (

@@ -16,7 +16,7 @@ export const postParticipantData = throttle(({ content, uuid, gamepin }) => {
     }
 }, 500);
 
-export const createParticipant = participantData => {
+export const createParticipant = (participantData: any) => {
     return axios.post(`${api}/participant/create`, {
         uuid: participantData.uuid,
         name: participantData.name,
