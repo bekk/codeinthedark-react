@@ -76,6 +76,7 @@ const App = ({ gamepin }: { gamepin: string }) => {
     const gamestate = context.gamestate;
     const game: SanityGame = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
     const { name, uuid } = gamestate;
+    console.log(gamestate);
 
     const [streak, updateStreak] = useState(0);
     const refStreak = React.useRef(streak);
@@ -174,7 +175,6 @@ const App = ({ gamepin }: { gamepin: string }) => {
         }
 
         // setTimeout(() => {
-        //     // tslint:disable-next-line
         //     editor.style.margin;
         // }, 75);
     };
@@ -310,12 +310,12 @@ const App = ({ gamepin }: { gamepin: string }) => {
                 )}
                 <div className="main-content">
                     <Countdown
-                        waiting={context.status !== statuses.IN_PROGRESS}
+                        waiting={context.gamestate.status !== statuses.IN_PROGRESS}
                         tekst={`Er du klar ${name}?`}
                     />
                     <div
                         className={classnames('editor-content', {
-                            waiting: context.status !== statuses.IN_PROGRESS,
+                            waiting: context.gamestate.status !== statuses.IN_PROGRESS,
                         })}
                     >
                         <Editor onChange={onChange} onLoad={onLoad} content={content} />

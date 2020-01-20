@@ -4,6 +4,7 @@ import { useLocalStorage } from '../hooks/useLocalstorage';
 import { createContext } from 'react';
 import { GameActions } from './actions';
 import { GameStatuses, AppState, Gamestate } from '../domain/types';
+import { useHistory, useParams } from 'react-router';
 
 export const Actions = {
     SET_GAME_STATE: 'SET_GAME_STATE',
@@ -17,12 +18,15 @@ export const statuses: GameStatuses = {
 };
 
 export const initialState: AppState = {
-    status: statuses.UNINITIALIZED,
     gamestate: {
         name: '',
         uuid: '',
         content: '',
         gamepin: '',
+        endTime: '',
+        startTime: '',
+        gameId: '',
+        status: '',
     },
 };
 
@@ -52,16 +56,18 @@ const GameStateProvider = ({ children }: Props) => {
     });
     const [state, dispatch] = useReducer(gamestateReducer, initialState);
 
-    useEffect(() => {
-        socketService.init(state.gamestate.gamepin, participantState.uuid);
-        const receiveGameState = socketService.onGameState();
+    const { gamepin = '' } = useParams();
 
+    useEffect(() => {
+        socketService.init(gamepin, participantState.uuid);
+        const receiveGameState = socketService.onGameState();
         receiveGameState.subscribe(data => {
             console.log('Data', data);
+            '';
             if (data) {
                 dispatch({
                     type: 'SET_GAME_STATE',
-                    payload: (data as unknown) as Gamestate, // Må fikse riktig datatype
+                    payload: (data as unknown) as Gamestate, // Må fikse riktig datatype,
                 });
             }
         });
@@ -73,7 +79,7 @@ const GameStateProvider = ({ children }: Props) => {
 };
 
 export const useGamestateContext = (): any => {
-    const context = React.useContext(GameStateContext);
+    const context = useContext(GameStateContext);
     if (context === undefined) {
         throw new Error('useGamestateContext må brukes inne i en GameStateContext');
     }

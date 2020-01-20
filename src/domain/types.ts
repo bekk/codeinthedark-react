@@ -1,5 +1,4 @@
 export interface AppState {
-    status: keyof GameStatuses;
     gamestate: Gamestate;
 }
 
@@ -10,6 +9,8 @@ export interface Gamestate {
     gamepin: string;
     endTime: string;
     startTime: string;
+    gameId: string;
+    status: string;
 }
 
 export interface ParticleColors {
@@ -25,8 +26,8 @@ export interface SanityGame {
 }
 
 export interface GameStatuses {
-    IN_PROGRESS: 'IN_PROGRESS';
     UNINITIALIZED: 'UNINITIALIZED';
     WAITING: 'WAITING';
+    IN_PROGRESS: 'IN_PROGRESS';
     FINISHED: 'FINISHED';
 }
