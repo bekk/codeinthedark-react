@@ -48,7 +48,7 @@ const GameStateProvider = (props: any) => {
         const receiveGameState = socketService.onGameState();
 
         receiveGameState.subscribe(data => {
-            console.log("Data", data);
+            console.log('Data', data);
             if (data) {
                 dispatch({
                     type: actions.SET_GAME_STATE,
@@ -63,7 +63,7 @@ const GameStateProvider = (props: any) => {
     return <GameStateContext.Provider value={state}>{props.children}</GameStateContext.Provider>;
 };
 
-export const useGamestateContext = () => {
+export const useGamestateContext = (): any => {
     const context = React.useContext(GameStateContext);
     if (context === undefined) {
         throw new Error('useGamestateContext må brukes inne i en GameStateContext');

@@ -26,7 +26,7 @@ const AppMedRouter = () => {
     );
 };
 
-const GameStates = ({ gamepin }) => {
+const GameStates = ({ gamepin }: any) => {
     const context = useGamestateContext();
 
     if (context.gamestate) {
