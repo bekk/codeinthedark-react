@@ -11,9 +11,8 @@ export const Actions = {
 };
 
 export const statuses: GameStatuses = {
+    CREATED: 'CREATED',
     IN_PROGRESS: 'IN_PROGRESS',
-    UNINITIALIZED: 'UNINITIALIZED',
-    WAITING: 'WAITING',
     FINISHED: 'FINISHED',
 };
 
@@ -78,7 +77,7 @@ const GameStateProvider = ({ children }: Props) => {
     return <GameStateContext.Provider value={state}>{children}</GameStateContext.Provider>;
 };
 
-export const useGamestateContext = (): any => {
+export const useGamestateContext = (): AppState => {
     const context = useContext(GameStateContext);
     if (context === undefined) {
         throw new Error('useGamestateContext må brukes inne i en GameStateContext');

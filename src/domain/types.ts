@@ -10,7 +10,7 @@ export interface Gamestate {
     endTime: string;
     startTime: string;
     gameId: string;
-    status: string;
+    status: keyof GameStatuses;
 }
 
 export interface ParticleColors {
@@ -25,9 +25,8 @@ export interface SanityGame {
     asset_texts: Array<string>;
 }
 
-export interface GameStatuses {
-    UNINITIALIZED: 'UNINITIALIZED';
-    WAITING: 'WAITING';
-    IN_PROGRESS: 'IN_PROGRESS';
-    FINISHED: 'FINISHED';
+export enum GameStatuses {
+    CREATED = 'CREATED',
+    IN_PROGRESS = 'IN_PROGRESS',
+    FINISHED = 'FINISHED',
 }
