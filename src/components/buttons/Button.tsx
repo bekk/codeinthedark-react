@@ -1,6 +1,11 @@
 import React from 'react';
 
-function Button({ onClick, children }) {
+interface Props {
+    onClick: () => void;
+    children: String;
+}
+
+function Button({ onClick, children }: Props) {
     return (
         <button className="instructions-button" onClick={onClick}>
             {children}

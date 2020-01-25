@@ -1,6 +1,12 @@
 import React from 'react';
+import { SanityGame } from './domain/types';
 
-const Instructions = ({ closeInstructions, game }) => {
+interface Props {
+    closeInstructions: () => void;
+    game?: SanityGame;
+}
+
+const Instructions = ({ closeInstructions, game }: Props) => {
     return (
         <div className="instructions-container" onClick={closeInstructions}>
             <div className="instructions" onClick={event => event.stopPropagation()}>
@@ -21,7 +27,7 @@ const Instructions = ({ closeInstructions, game }) => {
                     <p>--- Ressurser ---</p>
                     <ul>
                         <li>Tekster kan kopieres fra resultatet.</li>
-                        {game.asset_texts.map((help, index) => {
+                        {game?.asset_texts.map((help: string, index: number) => {
                             return <li key={index}>{help}</li>;
                         })}
                     </ul>

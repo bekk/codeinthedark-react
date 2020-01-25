@@ -3,7 +3,6 @@ import classnames from 'classnames';
 import React, { useState, useEffect } from 'react';
 import beautify from 'js-beautify';
 import { postParticipantData } from './api/api';
-import { useHistory } from 'react-router-dom';
 import { useSanity } from './hooks/useSanity';
 
 import Instructions from './Instructions';
@@ -22,45 +21,47 @@ import {
     POWER_MODE_ACTIVATION_THRESHOLD,
 } from './constants';
 
-import { useGamestateContext, statuses } from './Providers/GameStateProvider';
+import { useGamestateContext } from './Providers/GameStateProvider';
 import Nametag from './components/Nametag/Nametag';
 import Button from './components/buttons/Button';
 import StreakContainer from './components/Streak-container/Streak-container';
 import Editor from './components/Editor';
+import TimeLeft from './components/TimeLeft/TimeLeft';
+import { SanityGame, AppState, GameStatuses } from './domain/types';
 
-let streakTimeout, saveContentTimeout;
+let streakTimeout: number;
+let saveContentTimeout: number;
 
-const sample = arr => {
+const sample = (arr: any) => {
     const len = arr == null ? 0 : arr.length;
     return len ? arr[Math.floor(Math.random() * len)] : undefined;
 };
 
-let particles = [];
+let particles: any = [];
 let particlePointer = 0;
+
+setTimeout(() => {}, 300);
 
 let api = 'https://codeinthedark-api.herokuapp.com';
 if (process.env.NODE_ENV === 'development') {
     api = 'http://localhost:9000';
 }
 
-export const initialParticipantData = {
-    animate: false,
-    animationKey: 0,
-    content: `<html>
-    <style>
-    
-    </style>
-    <body>
-        
-    </body>
-</html>`,
-};
+interface PositionProps {
+    row: number;
+    column: number;
+}
+export interface DataProps {
+    action: string;
+    end: PositionProps;
+    start: PositionProps;
+    lines: Array<string>;
+}
 
-const App = props => {
-    const history = useHistory();
-    const context = useGamestateContext();
+const App = ({ gamepin }: { gamepin: string }) => {
+    const context: AppState = useGamestateContext();
     const gamestate = context.gamestate;
-    const game = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`)[0];
+    const [game, setFetch] = useSanity(`*[_type == "game" && id == "${gamestate.gameId}"]`);
     const { name, uuid } = gamestate;
 
     const [streak, updateStreak] = useState(0);
@@ -69,40 +70,48 @@ const App = props => {
     const [animate, setAnimate] = useState(false);
 
     // Content kommer fra gamestate
-    const [content, setContent] = useState(initialParticipantData.content);
+    const [content, setContent] = useState(gamestate.content);
     const [animationKey, setAnimationKey] = useState(0);
-    // Name kommer fra gamestate
     const [exclamation, setExclamation] = useState(undefined);
     const [viewInstructions, setViewInstructions] = useState(false);
     const [powerMode, setPowerMode] = useState(false);
-    const [editor, setEditor] = useState(undefined);
+    const [editor, setEditor] = useState<any>();
     const [lastDraw, setLastDraw] = useState(0);
     const [ctx, setCtx] = useState(undefined);
-    const [inputType, setInputType] = useState(undefined);
+    const [inputType, setInputType] = useState('');
+
+    const setAndBeautifyContent = (content: string) => {
+        setContent(
+            beautify.html(content, {
+                indent_size: 4,
+                indent_char: ' ',
+                max_preserve_newlines: 10,
+                preserve_newlines: true,
+                indent_scripts: 'keep',
+                end_with_newline: true,
+                wrap_line_length: 120,
+                indent_inner_html: true,
+            })
+        );
+    };
+
+    React.useEffect(() => {
+        setAndBeautifyContent(gamestate.content);
+        setFetch(true);
+    }, [gamestate.content]);
 
     document.onkeydown = event => {
         if ((event.key == 's' || event.key == 'S') && (event.ctrlKey || event.metaKey)) {
             event.preventDefault();
 
-            setContent(
-                beautify.html(content, {
-                    indent_size: 4,
-                    indent_char: ' ',
-                    max_preserve_newlines: 10,
-                    preserve_newlines: true,
-                    indent_scripts: 'keep',
-                    end_with_newline: true,
-                    wrap_line_length: 120,
-                    indent_inner_html: true,
-                })
-            );
+            setAndBeautifyContent(content);
             return false;
         }
 
         return true;
     };
 
-    const onChange = (value, data) => {
+    const onChange = (value: string, data: DataProps) => {
         const insertTextAction = data.action === 'insert';
 
         const pos = insertTextAction ? data.end : data.start;
@@ -121,32 +130,27 @@ const App = props => {
                 setAnimate(true);
                 setAnimationKey(animationKey + 1);
 
-                streakTimeout = setTimeout(() => {
+                streakTimeout = (setTimeout(() => {
                     updateStreak(0);
                     setAnimate(false);
                     setPowerMode(false);
-                }, 9800);
+                }, 9800) as unknown) as number;
             }
         } else {
             postParticipantData({
-                animate,
-                animationKey,
+                gamepin,
                 content: value,
-                exclamation,
-                name,
-                powerMode,
-                streak,
                 uuid,
             });
         }
 
-        saveContentTimeout = setTimeout(() => {
+        saveContentTimeout = (setTimeout(() => {
             const newState = {
-                ...participantState,
+                ...gamestate,
                 content: value,
             };
             sessionStorage.setItem('participantState', JSON.stringify(newState));
-        }, 300);
+        }, 300) as unknown) as number;
     };
 
     const shake = () => {
@@ -160,11 +164,14 @@ const App = props => {
         const x = intensity * (Math.random() > 0.5 ? -1 : 1);
         const y = intensity * (Math.random() > 0.5 ? -1 : 1);
 
-        document.getElementById('editor').style.margin = `${y}px ${x}px`;
+        const editor: HTMLElement | null = document.getElementById('editor');
+        if (editor) {
+            editor.style.margin = `${y}px ${x}px`;
+        }
 
-        setTimeout(() => {
-            document.getElementById('editor').style.margin;
-        }, 75);
+        // setTimeout(() => {
+        //     editor.style.margin;
+        // }, 75);
     };
 
     useEffect(() => {
@@ -178,18 +185,15 @@ const App = props => {
     }, []);
 
     useEffect(() => {
-        let tmpExplamation = exclamation;
-        let tmpPowerMode = refStreak.current === 0 ? false : powerMode;
         if (streak > 0 && (streak + 1) % 10 === 0) {
             const newExclamation = sample(EXCLAMATIONS);
             setExclamation(newExclamation);
-            tmpExplamation = newExclamation;
         }
 
         if (streak > POWER_MODE_ACTIVATION_THRESHOLD && !powerMode) {
             setPowerMode(true);
-            tmpPowerMode = true;
         }
+
         shake();
         if (editor) {
             getCursorPosition();
@@ -197,18 +201,13 @@ const App = props => {
         spawnParticles();
 
         postParticipantData({
-            animate,
-            animationKey,
+            gamepin,
             content,
-            exclamation: tmpExplamation,
-            name,
-            powerMode: tmpPowerMode,
-            streak,
             uuid,
         });
     }, [streak]);
 
-    const onLoad = editor => {
+    const onLoad = (editor: any) => {
         setEditor(editor);
     };
 
@@ -233,9 +232,10 @@ const App = props => {
         });
     };
 
-    const getParticleColor = type => PARTICLE_COLORS[type] || [255, 255, 255];
+    const getParticleColor = (type: string): Array<number> =>
+        PARTICLE_COLORS[type] || [255, 255, 255];
 
-    const createParticle = (x, y, color) => ({
+    const createParticle = (x: any, y: any, color: any) => ({
         x,
         y,
         color,
@@ -252,9 +252,9 @@ const App = props => {
     });
 
     const drawParticles = () => {
-        let canvasContext = ctx;
+        let canvasContext = ctx as any;
         if (!ctx) {
-            const canvas = document.getElementById('canvas');
+            const canvas = document.getElementById('canvas') as any;
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             canvasContext = canvas.getContext('2d');
@@ -262,7 +262,7 @@ const App = props => {
         }
 
         canvasContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        particles.forEach(particle => {
+        particles.forEach((particle: any) => {
             if (particle.alpha >= 0.1) {
                 particle.velocity.y += PARTICLE_GRAVITY;
                 particle.x += particle.velocity.x;
@@ -281,8 +281,9 @@ const App = props => {
         });
     };
 
-    const onFrame = timestamp => {
-        drawParticles(timestamp - lastDraw);
+    const onFrame = (timestamp: number) => {
+        // drawParticles(timestamp - lastDraw);
+        drawParticles();
         setLastDraw(timestamp);
         window.requestAnimationFrame(onFrame);
     };
@@ -292,27 +293,29 @@ const App = props => {
             <>
                 <div
                     className={classnames('background', {
-                        waiting: context.gamestate.status !== statuses.IN_PROGRESS,
+                        waiting: context.gamestate.status !== GameStatuses.IN_PROGRESS,
                     })}
                 />
                 <canvas id="canvas" />
                 {viewInstructions && (
                     <Instructions
                         closeInstructions={() => setViewInstructions(false)}
-                        game={game}
+                        game={game[0]}
                     />
                 )}
                 <div className="main-content">
                     <Countdown
-                        waiting={context.gamestate.status !== statuses.IN_PROGRESS}
+                        waiting={context.gamestate.status !== GameStatuses.IN_PROGRESS}
                         tekst={`Er du klar ${name}?`}
                     />
                     <div
                         className={classnames('editor-content', {
-                            waiting: context.gamestate.status !== statuses.IN_PROGRESS,
+                            waiting: context.gamestate.status !== GameStatuses.IN_PROGRESS,
                         })}
                     >
                         <Editor onChange={onChange} onLoad={onLoad} content={content} />
+
+                        <TimeLeft endTime={gamestate.endTime} />
 
                         <StreakContainer
                             animationKey={animationKey}
@@ -341,7 +344,7 @@ const App = props => {
                     </div>
                 </div>
 
-                <Result game={game} />
+                <Result game={game[0]} />
             </>
         </div>
     );
