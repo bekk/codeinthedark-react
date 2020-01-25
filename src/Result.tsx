@@ -8,7 +8,7 @@ interface Props {
 const Result = ({ game }: Props) => {
     return (
         <>
-            <div className="result__label">Resultat</div>
+            <div className="result__label">Ønsket resultat</div>
             <iframe className="result" srcDoc={game?.result_html} />
         </>
     );
