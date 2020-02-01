@@ -2,7 +2,7 @@ import { createBrowserHistory } from 'history';
 import React from 'react';
 import { render } from 'react-dom';
 import { Route, Router, Switch } from 'react-router';
-
+import * as Sentry from '@sentry/browser';
 import GameStateProvider, { useGamestateContext } from './Providers/GameStateProvider';
 import './index.less';
 import App from './App';
@@ -48,5 +48,13 @@ const GameStates = ({ gamepin }: Props) => {
         return null;
     }
 };
+
+// Initialize Sentry
+
+if (process.env.NODE_ENV === "production") {
+    Sentry.init({ dsn: "https://0ad2231460ae4c63a225447aae847e0e@sentry.io/2148518" });
+} else {
+    console.info("Initialiserer ikke Sentry lokalt");
+}
 
 render(<AppMedRouter />, document.getElementById('app'));
