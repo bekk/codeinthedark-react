@@ -330,16 +330,6 @@ const App = ({ gamepin }: { gamepin: string }) => {
                     </div>
                     <Nametag name={name} />
                     <div className="button-bar">
-                        <Button
-                            onClick={() =>
-                                axios.delete(`${api}/participant-data/${uuid}`).then(() => {
-                                    localStorage.clear();
-                                    location.reload();
-                                })
-                            }
-                        >
-                            Reset
-                        </Button>
                         <Button onClick={() => setViewInstructions(true)}>Instruksjoner</Button>
                     </div>
                 </div>

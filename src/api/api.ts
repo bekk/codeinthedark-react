@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === 'development') {
 
 export const postParticipantData = throttle(({ content, uuid, gamepin }) => {
     if (uuid !== '') {
-        axios.post(`${api}/participant-data`, {
+        axios.post(`${api}/participant/html`, {
             gamepin,
             content,
             uuid,
