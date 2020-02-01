@@ -1,5 +1,6 @@
 import axios from 'axios';
 import throttle from 'lodash/throttle';
+import { Participant } from '../domain/types';
 
 let api = 'https://codeinthedark-api.herokuapp.com';
 if (process.env.NODE_ENV === 'development') {
@@ -16,7 +17,7 @@ export const postParticipantData = throttle(({ content, uuid, gamepin }) => {
     }
 }, 5000);
 
-export const createParticipant = (participantData: any) => {
+export const createParticipant = (participantData: Participant) => {
     return axios.post(`${api}/participant/create`, {
         uuid: participantData.uuid,
         name: participantData.name,

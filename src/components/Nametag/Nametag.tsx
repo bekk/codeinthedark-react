@@ -8,7 +8,9 @@ function Nametag({ name }: Props) {
     if (!name) {
         return null;
     }
-    return <div className="name-tag">{name.trim()}</div>;
+    return (
+        <div className="name-tag">{name.trim()}</div>
+    );
 }
 
 export default Nametag;

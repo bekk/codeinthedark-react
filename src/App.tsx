@@ -32,7 +32,7 @@ import { SanityGame, AppState, GameStatuses } from './domain/types';
 let streakTimeout: number;
 let saveContentTimeout: number;
 
-const sample = (arr: any) => {
+const sample = (arr: Array<string> | Array<number>): string | number | undefined => {
     const len = arr == null ? 0 : arr.length;
     return len ? arr[Math.floor(Math.random() * len)] : undefined;
 };
@@ -40,7 +40,7 @@ const sample = (arr: any) => {
 let particles: any = [];
 let particlePointer = 0;
 
-setTimeout(() => {}, 300);
+setTimeout(() => { }, 300);
 
 let api = 'https://codeinthedark-api.herokuapp.com';
 if (process.env.NODE_ENV === 'development') {
@@ -72,11 +72,10 @@ const App = ({ gamepin }: { gamepin: string }) => {
     // Content kommer fra gamestate
     const [content, setContent] = useState(gamestate.content);
     const [animationKey, setAnimationKey] = useState(0);
-    const [exclamation, setExclamation] = useState(undefined);
+    const [exclamation, setExclamation] = useState<string | number | undefined>(undefined);
     const [viewInstructions, setViewInstructions] = useState(false);
     const [powerMode, setPowerMode] = useState(false);
     const [editor, setEditor] = useState<any>();
-    const [lastDraw, setLastDraw] = useState(0);
     const [ctx, setCtx] = useState(undefined);
     const [inputType, setInputType] = useState('');
 
@@ -284,7 +283,6 @@ const App = ({ gamepin }: { gamepin: string }) => {
     const onFrame = (timestamp: number) => {
         // drawParticles(timestamp - lastDraw);
         drawParticles();
-        setLastDraw(timestamp);
         window.requestAnimationFrame(onFrame);
     };
 
