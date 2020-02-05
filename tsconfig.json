@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./dist",
+        "outDir": "./production",
         "target": "es5",
         "lib": [
             "dom",

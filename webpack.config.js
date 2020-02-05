@@ -9,8 +9,8 @@ const smp = new SpeedMeasurePlugin({
 webpackConfig = {
     entry: './src/index.tsx',
     output: {
-        path: path.join(__dirname, 'dist'),
-        filename: './dist/bundle.js',
+        path: path.join(__dirname, 'production'),
+        filename: './production/bundle.js',
         publicPath: '/',
     },
     devtool: process.env.NODE_ENV === 'development' ? 'eval-source-map' : 'source-map',
