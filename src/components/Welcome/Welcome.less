@@ -1,29 +1,36 @@
-.container {
-    margin: 0px 2rem;
+.welcome {
+    margin: 0 auto;
     height: 100vh;
+    width: 40rem;
+    padding: 1rem;
     overflow: scroll;
-}
 
-.feilmelding {
-    color: red;
-}
+    @media (max-width: 40rem) {
+        width: 100%
+    }
 
-.sign-up-form {
-    display: flex;
-    flex-direction: column;
-    width: 33%;
-}
-
-.form-group {
-    margin: 2rem 0rem;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.form-group {
-    label,input[type="text"] {
-        margin: 10px;
-        font-size: 2rem;
+    & .feilmelding {
+        color: red;
+    }
+    
+    & .sign-up-form {
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 2rem);
+    }
+    
+    & .form-group {
+        margin: 2rem 0rem;
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 2rem);
+    }
+    
+    & .form-group {
+        label,input[type="text"] {
+            margin: 10px;
+            font-size: 2rem;
+        }
     }
 }
+

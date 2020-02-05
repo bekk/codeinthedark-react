@@ -9,12 +9,17 @@ export class SocketService {
 
     init(gamepin: string, uuid: string) {
         this.socket = io.connect(`${api}/participant`, { query: { gamepin, uuid } });
+        console.log(this.socket);
         return this;
     }
 
     // link message event to rxjs data source
     onGameState() {
         return fromEvent(this.socket, 'gamestate');
+    }
+
+    onDisconnect() {
+        return fromEvent(this.socket, 'disconnect');
     }
 
     // disconnect - used when unmounting

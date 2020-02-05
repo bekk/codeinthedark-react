@@ -45,7 +45,7 @@ const Welcome = () => {
     };
 
     return (
-        <div className="container">
+        <div className="welcome">
             <h1>Code in the Dark</h1>
             <form
                 className="sign-up-form"
