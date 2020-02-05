@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { createParticipant } from '../../api/api';
 import './Welcome.less';
 import { useLocalStorage } from '../../hooks/useLocalstorage';
+import { Participant } from '../../domain/types';
 const uuid = require('uuid/v1');
 
 const initialState = {
@@ -15,7 +16,7 @@ const Welcome = () => {
         uuid: '',
         name: '',
     });
-    const [state, setState] = useState(initialState);
+    const [state, setState] = useState<Participant>(initialState);
     const [error, setError] = useState('');
     const history = useHistory();
 
@@ -26,15 +27,13 @@ const Welcome = () => {
         });
     };
 
-    const onSubmit = (state: any) => {
+    const onSubmit = (state: Participant) => {
         state.uuid = localStorageData.uuid ? localStorageData.uuid : uuid();
 
         setError('');
         createParticipant(state)
             .then(data => {
-                // Lagre til local storage
                 setLocalStorageData(data.data);
-                // redirecte bruker til venteskjerm...
                 history.push(`/game/${state.gamepin}`);
             })
             .catch(error => {
@@ -43,14 +42,6 @@ const Welcome = () => {
                     setError(error.response.data.message);
                 }
             });
-
-        /**
-         * * Sjekk i api om gamepin finnes
-         * * Sjekk om navn finnes i db fra før?
-         * * Hvis gamepin ikke finnes, gi beskjed til bruker
-         * * Hvis gamepin finnes, skriv respons til local storage
-         */
-        // 3. Skrive respons til local storage og naviger til riktig url
     };
 
     return (

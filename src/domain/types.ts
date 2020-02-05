@@ -2,6 +2,12 @@ export interface AppState {
     gamestate: Gamestate;
 }
 
+export interface Participant {
+    name: string;
+    gamepin: string;
+    uuid?: string;
+}
+
 export interface Gamestate {
     name: string;
     uuid: string;

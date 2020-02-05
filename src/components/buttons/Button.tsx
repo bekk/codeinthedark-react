@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 interface Props {
     onClick: () => void;
-    children: String;
+    children: ReactNode;
 }
 
 function Button({ onClick, children }: Props) {

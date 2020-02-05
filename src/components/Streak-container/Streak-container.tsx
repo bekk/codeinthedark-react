@@ -1,6 +1,13 @@
 import React from 'react';
 
-function StreakContainer({ animationKey, streak, animate, exclamation }: any) {
+interface Props {
+    animationKey: number;
+    streak: number;
+    animate: boolean;
+    exclamation: string | number | undefined;
+}
+
+function StreakContainer({ animationKey, streak, animate, exclamation }: Props) {
     return (
         <div className="streak-container">
             <div className="current">Combo</div>

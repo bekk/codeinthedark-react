@@ -1,4 +1,4 @@
-import React, { Context, useReducer, useContext, useEffect } from 'react';
+import React, { Context, useReducer, useContext, useEffect, ReactNode } from 'react';
 import { SocketService } from './SocketService';
 import { useLocalStorage } from '../hooks/useLocalstorage';
 import { createContext } from 'react';
@@ -38,17 +38,17 @@ const gamestateReducer = (state: AppState, action: GameActions): AppState => {
 };
 
 interface Props {
-    children: Array<JSX.Element> | JSX.Element;
+    children: ReactNode
 }
 
 const GameStateProvider = ({ children }: Props) => {
     const socketService = new SocketService();
-    const [participantState, setParticipantState] = useLocalStorage('participantState', {
+    const [participantState, _] = useLocalStorage('participantState', {
         uuid: '',
         name: '',
     });
-    const [state, dispatch] = useReducer(gamestateReducer, initialState);
 
+    const [state, dispatch] = useReducer(gamestateReducer, initialState);
     const { gamepin = '' } = useParams();
 
     useEffect(() => {
