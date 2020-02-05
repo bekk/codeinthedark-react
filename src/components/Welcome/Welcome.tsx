@@ -37,7 +37,6 @@ const Welcome = () => {
                 history.push(`/game/${state.gamepin}`);
             })
             .catch(error => {
-                console.log(error);
                 if (error.response.data.message) {
                     setError(error.response.data.message);
                 }

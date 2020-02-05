@@ -61,7 +61,6 @@ const GameStateProvider = ({ children }: Props) => {
         const receiveGameState = socketService.onGameState();
 
         receiveGameState.subscribe(data => {
-            console.log(data);
             if (data) {
                 dispatch({
                     type: 'SET_GAME_STATE',

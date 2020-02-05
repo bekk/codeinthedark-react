@@ -9,7 +9,6 @@ export class SocketService {
 
     init(gamepin: string, uuid: string) {
         this.socket = io.connect(`${api}/participant`, { query: { gamepin, uuid } });
-        console.log(this.socket);
         return this;
     }
 
