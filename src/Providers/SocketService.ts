@@ -17,6 +17,10 @@ export class SocketService {
         return fromEvent(this.socket, 'gamestate');
     }
 
+    onDisconnect() {
+        return fromEvent(this.socket, 'disconnect');
+    }
+
     // disconnect - used when unmounting
     disconnect() {
         this.socket.disconnect();

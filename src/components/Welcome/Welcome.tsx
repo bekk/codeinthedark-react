@@ -37,7 +37,6 @@ const Welcome = () => {
                 history.push(`/game/${state.gamepin}`);
             })
             .catch(error => {
-                console.log(error);
                 if (error.response.data.message) {
                     setError(error.response.data.message);
                 }
@@ -45,7 +44,7 @@ const Welcome = () => {
     };
 
     return (
-        <div className="container">
+        <div className="welcome">
             <h1>Code in the Dark</h1>
             <form
                 className="sign-up-form"

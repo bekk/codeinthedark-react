@@ -40,7 +40,7 @@ const sample = (arr: Array<string> | Array<number>): string | number | undefined
 let particles: any = [];
 let particlePointer = 0;
 
-setTimeout(() => { }, 300);
+setTimeout(() => {}, 300);
 
 let api = 'https://codeinthedark-api.herokuapp.com';
 if (process.env.NODE_ENV === 'development') {

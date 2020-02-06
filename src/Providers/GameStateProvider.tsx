@@ -4,7 +4,7 @@ import { useLocalStorage } from '../hooks/useLocalstorage';
 import { createContext } from 'react';
 import { GameActions } from './actions';
 import { GameStatuses, AppState, Gamestate } from '../domain/types';
-import { useParams } from 'react-router';
+import { useParams, useHistory } from 'react-router';
 
 export const Actions = {
     SET_GAME_STATE: 'SET_GAME_STATE',
@@ -38,10 +38,11 @@ const gamestateReducer = (state: AppState, action: GameActions): AppState => {
 };
 
 interface Props {
-    children: ReactNode
+    children: ReactNode;
 }
 
 const GameStateProvider = ({ children }: Props) => {
+    const history = useHistory();
     const socketService = new SocketService();
     const [participantState, _] = useLocalStorage('participantState', {
         uuid: '',
@@ -52,8 +53,13 @@ const GameStateProvider = ({ children }: Props) => {
     const { gamepin = '' } = useParams();
 
     useEffect(() => {
+        if (participantState.uuid === '') {
+            history.push('/');
+        }
+
         socketService.init(gamepin, participantState.uuid);
         const receiveGameState = socketService.onGameState();
+
         receiveGameState.subscribe(data => {
             if (data) {
                 dispatch({
@@ -61,6 +67,11 @@ const GameStateProvider = ({ children }: Props) => {
                     payload: (data as unknown) as Gamestate, // Må fikse riktig datatype,
                 });
             }
+        });
+
+        const onDisconnect = socketService.onDisconnect();
+        onDisconnect.subscribe(() => {
+            history.push('/');
         });
 
         return () => socketService.disconnect();
