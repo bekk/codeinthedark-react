@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './deltagerResultat.less';
+import { api } from '../../api/api';
 
 interface IProps {
     gamepin: string;
@@ -17,7 +18,7 @@ const DeltagerResultat: React.SFC<IProps> = ({ gamepin, uuid }) => {
                 starte et nytt spill
             </p>
 
-            <iframe src={`http://localhost:9000/game/${gamepin}/${uuid}`} />
+            <iframe src={`${api}/game/${gamepin}/${uuid}`} />
         </div>
     );
 };
