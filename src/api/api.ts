@@ -2,7 +2,7 @@ import axios from 'axios';
 import throttle from 'lodash/throttle';
 import { Participant } from '../domain/types';
 
-let api = 'https://codeinthedark-api.herokuapp.com';
+export let api = 'https://codeinthedark-api.herokuapp.com';
 if (process.env.NODE_ENV === 'development') {
     api = 'http://localhost:9000';
 }

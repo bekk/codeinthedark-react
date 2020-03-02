@@ -1,7 +1,7 @@
 import { createBrowserHistory } from 'history';
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { render } from 'react-dom';
-import { Route, Router, Switch } from 'react-router';
+import { Route, Router, Switch, Prompt } from 'react-router';
 import * as Sentry from '@sentry/browser';
 import GameStateProvider, { useGamestateContext } from './Providers/GameStateProvider';
 import './index.less';
@@ -9,7 +9,7 @@ import App from './App';
 import Welcome from './components/Welcome/Welcome';
 import DeltagerResultat from './components/DeltagerResultat/DeltagerResult';
 
-const AppMedRouter = () => {
+const AppMedRouter: React.FunctionComponent = () => {
     return (
         <Router history={createBrowserHistory()}>
             <Switch>
@@ -18,6 +18,10 @@ const AppMedRouter = () => {
                     path={'/game/:gamepin'}
                     render={props => (
                         <GameStateProvider>
+                            <Prompt
+                                when={true}
+                                message="Ved å forlate spillet mister du progresjonen, er du sikker på at du vil dra?"
+                            />
                             <GameStates gamepin={props.match.params.gamepin} />
                         </GameStateProvider>
                     )}
